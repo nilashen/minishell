@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/01 17:10:01 by nashena          ###   ########.fr       */
+/*   Created: 2025/08/01 16:42:24 by nashena           #+#    #+#             */
+/*   Updated: 2025/08/01 16:44:43 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libutils.h"
 
-# include "library/libutils.h"
-# include <errno.h>
-# include <stdio.h>
-# include <signal.h>
-# include <string.h>
-# include <sys/stat.h>
-# include <sys/wait.h>
-int	mysh_echo(char **argv);
-int		mysh_pwd(void);
-int		mysh_cd(char **argv);
-int		mysh_env(char **envp);
-int		mysh_exit(char **argv);
-int		main(int argc, char **argv, char **envp);
-	
-#endif
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}

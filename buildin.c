@@ -6,13 +6,13 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/01 15:15:28 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/01 17:09:50 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	mysh_echo(char **argv)
+int	mysh_echo(char **argv)
 {
 	int	i;
 	int	newline;
@@ -28,7 +28,7 @@ void	mysh_echo(char **argv)
 	}
 	while (argv[i])
 	{
-		printf("%s", argv[i]);
+		ft_printf("%s", argv[i]);
 		if (argv[i + 1])
 			ft_printf(" ");
 		i++;

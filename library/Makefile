@@ -49,7 +49,8 @@ LIBFT_SRC = ft_isalpha \
 			ft_putchar_fd \
 			ft_putstr_fd \
 			ft_putendl_fd \
-			ft_putnbr_fd
+			ft_putnbr_fd \
+			ft_strcmp 
 
 # ft_printf source files
 PRINTF_SRC = ft_printf \
