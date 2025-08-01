@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/07/31 11:38:15 by nashena          ###   ########.fr       */
+/*   Updated: 2025/07/31 12:27:39 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,7 @@
 void	mysh_echo(char **argv);
 int		mysh_pwd(void);
 int		mysh_cd(char **argv);
-
+int		mysh_env(char **envp);
+int		mysh_exit(char **argv);
+	
 #endif

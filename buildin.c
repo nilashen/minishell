@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/07/31 11:31:59 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/01 15:15:28 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,28 @@
 
 void	mysh_echo(char **argv)
 {
-	int i;
-	int newline;
+	int	i;
+	int	newline;
 
-	i = 1;
+	if (!argv || !argv[0])
+		return (1);
 	newline = 1;
-	if (argv[1] && (ft_strcmp(argv[1], "-n") == 0))
+	i = 1;
+	if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
 	{
 		newline = 0;
-		i++;
+		i = 2;
 	}
-	i = 0;
-	while (argv[i] != NULL)
+	while (argv[i])
 	{
-		ft_printf("%s", argv[i]);
-		if (argv[i + 1] != NULL)
-		{
+		printf("%s", argv[i]);
+		if (argv[i + 1])
 			ft_printf(" ");
-		}
 		i++;
 	}
 	if (newline)
-	{
 		ft_printf("\n");
-	}
+	return (0);
 }
 int	mysh_pwd(void)
 {
@@ -49,7 +47,7 @@ int	mysh_pwd(void)
 		perror("pwd");
 		return (1);
 	}
-	printf("%s\n", cwd);
+	ft_printf("%s\n", cwd);
 	free(cwd);
 	return (0);
 }
@@ -62,7 +60,7 @@ int	mysh_cd(char **argv)
 		path = getenv("HOME");
 		if (!path)
 		{
-			printf("cd: HOME not set\n");
+			ft_printf("cd: HOME not set\n");
 			return (1);
 		}
 	}
@@ -74,4 +72,27 @@ int	mysh_cd(char **argv)
 		return (1);
 	}
 	return (0);
+}
+int	mysh_env(char **envp)
+{
+	int	i;
+
+	if (!envp)
+		return (1);
+	i = 0;
+	while (envp[i])
+	{
+		ft_printf("%s\n", envp[i]);
+		i++;
+	}
+	return (0);
+}
+int	mysh_exit(char **args)
+{
+	int	exit_code;
+
+	exit_code = 0;
+	if (args[1])
+		exit_code = ft_atoi(args[1]);
+	exit(exit_code);
 }
