@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/01 17:09:50 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/01 19:12:01 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,35 @@ int	mysh_exit(char **args)
 	if (args[1])
 		exit_code = ft_atoi(args[1]);
 	exit(exit_code);
+}
+int	mysh_export(char **args, char ***envp)
+{
+	int		i;
+	char	*equal_sign;
+	char	*key;
+	char	*value;
+
+	if (!args[1])
+		return (mysh_env(*envp));
+	i = 1;
+	while (args[i])
+	{
+		equal_sign = ft_strchr(args[i], '=');
+		if (equal_sign)
+		{
+			*equal_sign = '\0';
+			key = args[i];
+			value = equal_sign + 1;
+			if (env_set(envp, key, value) != 0)
+				return (1);
+			*equal_sign = '=';
+		}
+		else
+		{
+			if (env_set(envp, args[i], "") != 0)
+				return (1);
+		}
+		i++;
+	}
+	return (0);
 }

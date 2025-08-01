@@ -1,0 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_of _env.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/01 19:10:24 by nashena           #+#    #+#             */
+/*   Updated: 2025/08/01 19:24:03 by nashena          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+int	env_set(char ***envp, char *key, char *value)
+{
+	char **new_env;
+	char *new_var;
+	char *temp;
+	int i;
+	int found;
+
+	if (!envp || !key)
+		return (-1);
+	temp = ft_strjoin(key, "=");
+	if (!temp)
+		return (-1);
+	new_var = ft_strjoin(temp, value);
+	free(temp);
+	if (!new_var)
+		return (-1);
+	i = 0;
+	found = 0;
+	while ((*envp)[i])
+	{
+		if (ft_strncmp((*envp)[i], key, ft_strlen(key)) == 0
+			&& (*envp)[i][ft_strlen(key)] == '=')
+		{
+			free((*envp)[i]);
+			(*envp)[i] = new_var;
+			found = 1;
+			break ;
+		}
+		i++;
+	}
+	if (!found)
+	{
+		new_env = malloc(sizeof(char *) * (env_count(*envp) + 2));
+		if (!new_env)
+		{
+			free(new_var);
+			return (-1);
+		}
+		i = 0;
+		while ((*envp)[i])
+		{
+			new_env[i] = (*envp)[i];
+			i++;
+		}
+		new_env[i] = new_var;
+		new_env[i + 1] = NULL;
+		free(*envp);
+		*envp = new_env;
+	}
+	return (0);
+}
+
+static int	env_count(char **envp)
+{
+	int	count;
+
+	count = 0;
+	while (envp[count])
+		count++;
+	return (count);
+}
