@@ -74,6 +74,8 @@ This project involves creating a functional shell that can:
 - [ ] Evaluation preparation
 
 ## 🏗️ Project Structure
+
+```
 minishell/
 ├── 📁 include/
 │   └── minishell.h              # Main header file with all structures
@@ -112,3 +114,5 @@ minishell/
 │   └── coding_standards.md      # Team coding conventions
 ├── Makefile                     # Build system
 ├── README.md                    # This file
+└── .gitignore                   # Git ignore rules
+```
