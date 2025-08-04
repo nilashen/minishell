@@ -46,12 +46,24 @@ void	sigquit_handler(int sig)
 }
 
 /**
- * Setup signal handlers
+ * Setup signal handlers for interactive mode
  */
 void	setup_signals(void)
 {
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, sigquit_handler);
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
+
+	// Setup SIGINT (Ctrl-C) handler
+	sa_int.sa_handler = sigint_handler;
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa_int, NULL);
+
+	// Setup SIGQUIT (Ctrl-\) handler - ignore it completely
+	sa_quit.sa_handler = SIG_IGN;  // Ignore the signal completely
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
 }
 
 /**
@@ -60,32 +72,46 @@ void	setup_signals(void)
 void	shell_loop(void)
 {
 	char	*input;
+	t_cmd	*cmd;
 
 	while (1)
 	{
 		input = read_input();
+		
 		// Handle Ctrl-D (EOF)
 		if (!input)
 		{
 			ft_putendl_fd("exit", STDOUT_FILENO);
 			break;
 		}
+		
 		// Skip empty input
 		if (*input == '\0')
 		{
 			free(input);
 			continue;
 		}
+		
 		// Add to history
 		add_history(input);
-		// For now, just echo the input
-		printf("You entered: %s\n", input);
-		// Check for exit command
-		if (strcmp(input, "exit") == 0)
+		
+		// Parse the command
+		cmd = parse_command(input);
+		if (cmd)
 		{
-			free(input);
-			break;
+			// Check for exit command
+			if (cmd->args[0] && strcmp(cmd->args[0], "exit") == 0)
+			{
+				free_command(cmd);
+				free(input);
+				break;
+			}
+			
+			// Execute the command
+			execute_command(cmd);
+			free_command(cmd);
 		}
+		
 		free(input);
 	}
 }
