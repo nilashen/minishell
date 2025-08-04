@@ -12,7 +12,9 @@ OBJDIR = obj
 
 # Source files
 SOURCES = main.c \
-          prompt.c
+          prompt.c \
+          parser.c \
+          executor.c
 
 # Object files
 SRCS = $(addprefix $(SRCDIR)/, $(SOURCES))
@@ -36,8 +38,8 @@ $(NAME): $(OBJS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
 	@mkdir -p $(OBJDIR)
-	@echo "Compiling $<..."
-	@$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
+	@echo "Compiling $< with includes from $(INCDIR)..."
+	$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
 
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
