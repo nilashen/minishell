@@ -37,29 +37,28 @@ This project involves creating a functional shell that can:
 - [x] Stub functions compile and run
 
 **Coordination with partner:**
-- [ ] Shared the `minishell.h` file
+- [x] Shared the `minishell.h` file
 - [ ] Agreed on data structure interfaces
-- [ ] Planned tomorrow's sync meeting
 
 ### 🔄 Day 2 - Basic Implementation (In Progress)
 **Parser Development (Developer A):**
-- [ ] Implement basic tokenizer
-- [ ] Handle simple quotes
-- [ ] Environment variable expansion
-- [ ] Basic command parsing
+- [x]Implement basic tokenizer
+- [x] Handle simple quotes
+- [x] Environment variable expansion
+- [x] Basic command parsing
 
 **Executor Development (Developer B):**
-- [ ] Basic command execution
+- [x] Basic command execution
 - [ ] Fork/exec implementation
-- [ ] Simple built-ins (echo, pwd)
-- [ ] Error handling
+- [x]imple built-ins (echo, pwd)
+- [x] Basic error handling
 
 ### 📅 Week 1 Goals
-- [ ] Basic shell loop functional
-- [ ] Simple command execution
+- [x] Basic shell loop functional
+- [ ] Simple command execution (Partial)
 - [ ] Quote handling
 - [ ] Basic redirections
-- [ ] Environment variables
+- [ ] Environment variables (partial)
 
 ### 📅 Week 2 Goals  
 - [ ] Pipe implementation
