@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/05 11:07:55 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/05 16:19:39 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@
 typedef enum e_token_type
 {
 	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND,
+	TOKEN_HEREDOC
 }	t_token_type;
 
 /* DATA STRUCTURES */
