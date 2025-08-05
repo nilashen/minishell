@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:14:43 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/03 17:10:43 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/05 10:35:56 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 	char	*path;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
+		return (1);
+	if (setup_redirections(cmd) != 0)
 		return (1);
 	if (is_mysh(cmd->args[0]))
 		return (execute_mysh(shell, cmd));

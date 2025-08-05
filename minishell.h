@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/03 17:13:11 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/05 11:07:55 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@
 # include <string.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# include <unistd.h>
+
+/* DEFINES */
+typedef enum e_token_type
+{
+	TOKEN_REDIR_IN,
+}	t_token_type;
 
 /* DATA STRUCTURES */
 typedef struct s_cmd
@@ -35,6 +42,21 @@ typedef struct s_shell
 	int					last_exit_status;
 	t_cmd				*cmds;
 }	t_shell;
+
+typedef struct s_redir
+{
+	int					type;
+	char				*file;
+	int					fd;
+	struct s_redir		*next;
+}	t_redir;
+
+typedef struct s_cmd
+{
+	char				**args;
+	t_redir				*redirs;
+	struct s_cmd		*next;
+}	t_cmd;
 
 /* FUNCTION PROTOTYPES */
 int		mysh_echo(char **argv);
@@ -52,4 +74,5 @@ int		commands_execution(t_shell *shell);
 int		execute_single_cmd(t_shell *shell, t_cmd *cmd);
 int		is_mysh(char *cmd);
 int		execute_mysh(t_shell *shell, t_cmd *cmd);
+int		setup_redirections(t_cmd *cmd);
 #endif
