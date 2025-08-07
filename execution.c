@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:14:43 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/05 12:24:21 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/07 10:28:33 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,7 @@ int	commands_execution(t_shell *shell)
 }
 int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 {
-	pid_t	pid;
-	int		status;
+
 	char	*path;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
@@ -82,4 +81,6 @@ int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 		return (1);
 	if (is_mysh(cmd->args[0]))
 		return (execute_mysh(shell, cmd));
+	path = find_executable_path(cmd->args[0], shell->envp);
+	
 }

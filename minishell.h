@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/05 16:19:39 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/07 10:28:40 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include <stdlib.h>
 
 /* DEFINES */
 typedef enum e_token_type
@@ -78,4 +79,6 @@ int		execute_single_cmd(t_shell *shell, t_cmd *cmd);
 int		is_mysh(char *cmd);
 int		execute_mysh(t_shell *shell, t_cmd *cmd);
 int		setup_redirections(t_cmd *cmd);
+char	*find_executable_path(char *cmd, char **envp);
+
 #endif
