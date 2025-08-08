@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:14:43 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/07 10:28:33 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:53:15 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ int	commands_execution(t_shell *shell)
 }
 int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 {
-
+	pid_t	pid;
+	int		status;
 	char	*path;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
@@ -82,5 +83,26 @@ int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 	if (is_mysh(cmd->args[0]))
 		return (execute_mysh(shell, cmd));
 	path = find_executable_path(cmd->args[0], shell->envp);
-	
+	if (!path)
+	{
+		ft_printf("minishell: %s: command not found\n", cmd->args[0]);
+		return (127);
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		execve(path, cmd->args, shell->envp);
+		perror("execve");
+		exit(126);
+	}
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+		free(path);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+		return (1);
+	}
+	free(path);
+	return (1);
 }

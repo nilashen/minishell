@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/07 10:28:40 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:51:56 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@
 # include <sys/wait.h>
 # include <unistd.h>
 #include <stdlib.h>
-
+# include <dirent.h>
+# include <termios.h>
+# include <curses.h>
+# include <term.h>
 /* DEFINES */
 typedef enum e_token_type
 {

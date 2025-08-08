@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/03 13:28:25 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:55:57 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 int	mysh_echo(char **argv)
 {
 	int	i;
-	int	newline;
+	int	new_line;
 
 	if (!argv || !argv[0])
 		return (1);
-	newline = 1;
+	new_line = 1;
 	i = 1;
 	if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
 	{
-		newline = 0;
+		new_line = 0;
 		i = 2;
 	}
 	while (argv[i])
@@ -33,7 +33,7 @@ int	mysh_echo(char **argv)
 			ft_printf(" ");
 		i++;
 	}
-	if (newline)
+	if (new_line)
 		ft_printf("\n");
 	return (0);
 }
