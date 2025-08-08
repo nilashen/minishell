@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:14:43 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/07 16:53:15 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/08 16:39:26 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	commands_execution(t_shell *shell)
 	}
 	if (cmd_count == 1)
 		return (execute_single_cmd(shell, shell->cmds));
+	else
+		return (execute_pipeline(shell));
 }
 int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 {
@@ -105,4 +107,77 @@ int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 	}
 	free(path);
 	return (1);
+}
+int	execute_pipeline(t_shell *shell)
+{
+	t_cmd	*current;
+	int		pipe_fds[2];
+	int		prev_fd;
+	pid_t	pid;
+	int		status;
+	int		last_status;
+
+	current = shell->cmds;
+	prev_fd = -1;
+	last_status = 0;
+	while (current)
+	{
+		if (current->next && pipe(pipe_fds) == -1)
+		{
+			perror("pipe");
+			return (1);
+		}
+		pid = fork();
+		if (pid == 0)
+		{
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, STDIN_FILENO);
+				close(prev_fd);
+			}
+			if (current->next)
+			{
+				dup2(pipe_fds[1], STDOUT_FILENO);
+				close(pipe_fds[1]);
+			}
+			if (current->next)
+				close(pipe_fds[0]);
+			if (setup_redirections(current) != 0)
+				exit(1);
+			if (is_mysh(current->args[0]))
+				exit(execute_mysh(shell, current));
+			else
+			{
+				char *path = find_executable_path(current->args[0], shell->envp);
+				if (!path)
+				{
+					ft_printf("minishell: %s: command not found\n", current->args[0]);
+					exit(127);
+				}
+				execve(path, current->args, shell->envp);
+				perror("execve");
+				exit(126);
+			}
+		}
+		else if (pid > 0)
+		{
+			if (prev_fd != -1)
+				close(prev_fd);
+			if (current->next)
+			{
+				close(pipe_fds[1]);
+				prev_fd = pipe_fds[0];
+			}
+			if (!current->next)
+			{
+				waitpid(pid, &status, 0);
+				if (WIFEXITED(status))
+					last_status = WEXITSTATUS(status);
+			}
+		}
+		current = current->next;
+	}
+	while (wait(NULL) > 0)
+		;
+	return (last_status);
 }

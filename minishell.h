@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/07 16:51:56 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/08 16:38:00 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,6 @@ int		is_mysh(char *cmd);
 int		execute_mysh(t_shell *shell, t_cmd *cmd);
 int		setup_redirections(t_cmd *cmd);
 char	*find_executable_path(char *cmd, char **envp);
+int		execute_pipeline(t_shell *shell);
 
 #endif
