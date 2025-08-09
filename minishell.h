@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/09 18:18:11 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/09 18:29:10 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_cmd
 
 /* FUNCTION PROTOTYPES */
 int					mysh_echo(char **argv);
-int					mysh_pwd(void);
+int					mysh_pwd(char **argv);
 int					mysh_cd(char **argv);
 int					mysh_env(char **envp);
 int					mysh_exit(char **argv);
