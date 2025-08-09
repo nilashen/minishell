@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/07 16:55:57 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/09 18:23:10 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,50 @@ int	mysh_echo(char **argv)
 		ft_printf("\n");
 	return (0);
 }
-int	mysh_pwd(void)
+int	mysh_pwd(char **argv)
 {
 	char	*cwd;
+	char	buffer[PATH_MAX];
 
+	(void)argv;
 	cwd = getcwd(NULL, 0);
-	if (!cwd)
+	if (cwd)
 	{
-		perror("pwd");
+		ft_printf("%s\n", cwd);
+		free(cwd);
+		return (0);
+	}
+	if (getcwd(buffer, sizeof(buffer)))
+	{
+		ft_printf("%s\n", buffer);
+		return (0);
+	}
+	if (errno == ENOENT)
+	{
+		ft_putstr_fd("pwd: cannot get current directory: ", STDERR_FILENO);
+		ft_putstr_fd("No such file or directory\n", STDERR_FILENO);
 		return (1);
 	}
-	ft_printf("%s\n", cwd);
-	free(cwd);
-	return (0);
+	else if (errno == EACCES)
+	{
+		ft_putstr_fd("pwd: cannot get current directory: ", STDERR_FILENO);
+		ft_putstr_fd("Permission denied\n", STDERR_FILENO);
+		return (1);
+	}
+	else if (errno == ENAMETOOLONG)
+	{
+		ft_putstr_fd("pwd: cannot get current directory: ", STDERR_FILENO);
+		ft_putstr_fd("File name too long\n", STDERR_FILENO);
+		return (1);
+	}
+	else if (errno == ENOMEM)
+	{
+		ft_putstr_fd("pwd: cannot get current directory: ", STDERR_FILENO);
+		ft_putstr_fd("Cannot allocate memory\n", STDERR_FILENO);
+		return (1);
+	}
+	perror("pwd");
+	return (1);
 }
 int	mysh_cd(char **argv)
 {
@@ -132,7 +163,7 @@ int	mysh_export(char **args, char ***envp)
 
 int	mysh_unset(char **argv, char ***envp)
 {
-	int	i;
+	int i;
 	if (!envp || !*envp)
 		return (1);
 	if (!argv[1])
