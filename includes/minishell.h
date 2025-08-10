@@ -61,4 +61,15 @@ int		count_words(char *input);
 int		execute_command(t_cmd *cmd);
 char	*find_command_path(char *cmd);
 
+// Built-in functions
+int		is_builtin(char *cmd);
+int		execute_builtin(t_cmd *cmd);
+int		builtin_echo(t_cmd *cmd);
+int		builtin_cd(t_cmd *cmd);
+int		builtin_pwd(t_cmd *cmd);
+int		builtin_export(t_cmd *cmd);
+int		builtin_unset(t_cmd *cmd);
+int		builtin_env(t_cmd *cmd);
+int		builtin_exit(t_cmd *cmd);
+
 #endif
