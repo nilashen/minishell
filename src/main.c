@@ -99,15 +99,7 @@ void	shell_loop(void)
 		cmd = parse_command(input);
 		if (cmd)
 		{
-			// Check for exit command
-			if (cmd->args[0] && strcmp(cmd->args[0], "exit") == 0)
-			{
-				free_command(cmd);
-				free(input);
-				break;
-			}
-			
-			// Execute the command
+			// Execute the command (built-in or external)
 			execute_command(cmd);
 			free_command(cmd);
 		}

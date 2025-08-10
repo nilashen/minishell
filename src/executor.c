@@ -65,7 +65,7 @@ char	*find_command_path(char *cmd)
 }
 
 /**
- * Execute a single command
+ * Execute a command (check built-ins first, then external commands)
  */
 int	execute_command(t_cmd *cmd)
 {
@@ -76,7 +76,11 @@ int	execute_command(t_cmd *cmd)
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
 
-	// Find the command path
+	// Check if it's a built-in command first
+	if (is_builtin(cmd->args[0]))
+		return (execute_builtin(cmd));
+
+	// Find the command path for external commands
 	cmd_path = find_command_path(cmd->args[0]);
 	if (!cmd_path)
 	{
@@ -84,7 +88,7 @@ int	execute_command(t_cmd *cmd)
 		return (127);
 	}
 
-	// Fork and execute
+	// Fork and execute external command
 	pid = fork();
 	if (pid == 0)
 	{
