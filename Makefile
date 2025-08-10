@@ -14,7 +14,8 @@ OBJDIR = obj
 SOURCES = main.c \
           prompt.c \
           parser.c \
-          executor.c
+          executor.c \
+          builtins.c
 
 # Object files
 SRCS = $(addprefix $(SRCDIR)/, $(SOURCES))
