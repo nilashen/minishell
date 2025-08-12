@@ -1,7 +1,11 @@
+
 #include "minishell.h"
 
 // Global variable for signal handling (only one allowed by subject)
 int g_signal = 0;
+
+// Global variable for last exit status (for $?)
+int g_last_exit_status = 0;
 
 /**
  * Simple utility function to write string to file descriptor
@@ -100,7 +104,7 @@ void	shell_loop(void)
 		if (cmd)
 		{
 			// Execute the command (built-in or external)
-			execute_command(cmd);
+			g_last_exit_status = execute_command(cmd);
 			free_command(cmd);
 		}
 		
