@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 11:48:38 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 15:07:43 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,18 @@ int	mysh_pwd(void)
 	return (0);
 }
 
-int	mysh_cd(char **args)
+int mysh_cd(char **args, char ***envp)
 {
-	char	*path;
-	char	*home;
-
-	if (!args[1])
-	{
-		home = getenv("HOME");
-		if (!home)
-		{
-			ft_printf("cd: HOME not set\n");
-			return (1);
-		}
-		path = home;
-	}
-	else
-		path = args[1];
-	if (chdir(path) == -1)
-	{
-		perror("cd");
-		return (1);
-	}
-	return (0);
+    int arg_count;
+	arg_count = get_arg_count(args);
+	if (arg_count > 2)
+    {
+        ft_printf("cd: too many arguments\n");
+        return (1);
+    }
+    return process_cd_command(args, arg_count, envp);
 }
+
 int	mysh_env(char **envp)
 {
 	int	i;

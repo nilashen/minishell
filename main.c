@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:18:40 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 11:48:55 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 16:23:40 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	main(int argc, char **argv, char **envp)
 		if (argc > 2)
 			arg1 = argv[2];
 		test_args = create_test_args("cd", arg1, NULL);
-		result = mysh_cd(test_args);
+		result = mysh_cd(test_args,NULL);
 		free(test_args);
 		return (result);
 	}

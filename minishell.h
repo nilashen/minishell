@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 11:48:47 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 16:25:53 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_shell
 
 /* FUNCTION PROTOTYPES */
 int					mysh_echo(char **argv);
-int					mysh_cd(char **args);
+int					mysh_cd(char **argv, char ***envp);
 int					mysh_pwd(void);
 int					mysh_env(char **envp);
 int					mysh_exit(char **argv);
@@ -81,5 +81,7 @@ int					setup_redirections(t_cmd *cmd);
 char				*find_executable_path(char *cmd, char **envp);
 int					execute_pipeline(t_shell *shell);
 void				handle_getcwd_error(void);
-
+void				handle_chdir_error(const char *arg);
+int					process_cd_command(char **args, int arg_count, char ***envp);
+int 				get_arg_count(char **args);
 #endif

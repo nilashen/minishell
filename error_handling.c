@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 21:21:24 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 11:46:07 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 16:25:24 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,16 @@
 		ft_putstr_fd("pwd: cannot get current directory: Result too large\n", STDERR_FILENO);
 	else
 		perror("pwd");
+}
+
+void handle_chdir_error(const char *arg)
+{
+    if (errno == ENOENT)
+        ft_printf("cd: %s: No such file or directory\n", arg);
+    else if (errno == EACCES)
+        ft_printf("cd: %s: Permission denied\n", arg);
+    else if (errno == ENOTDIR)
+        ft_printf("cd: %s: Not a directory\n", arg);
+    else
+        ft_printf("cd: %s: %s\n", arg, strerror(errno));
 }
