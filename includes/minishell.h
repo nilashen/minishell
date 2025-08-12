@@ -1,7 +1,10 @@
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+/* ************************************************************************** */
 /*                               INCLUDES                                     */
+/* ************************************************************************** */
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -14,16 +17,21 @@
 # include <sys/types.h>
 # include <fcntl.h>
 # include <errno.h>
+# include <ctype.h>
 
 // External environ variable
 extern char **environ;
 
+/* ************************************************************************** */
 /*                               DEFINES                                      */
+/* ************************************************************************** */
 
 # define PROMPT "minishell$ "
 # define MAX_PATH 1024
 
+/* ************************************************************************** */
 /*                               STRUCTURES                                   */
+/* ************************************************************************** */
 
 // Simple command structure
 typedef struct s_cmd
@@ -35,7 +43,12 @@ typedef struct s_cmd
 // Global variable for signal handling (only one allowed)
 extern int g_signal;
 
+// Global variable for last exit status (for $?)
+extern int g_last_exit_status;
+
+/* ************************************************************************** */
 /*                               FUNCTION PROTOTYPES                         */
+/* ************************************************************************** */
 
 // Main functions
 int		main(int argc, char **argv, char **envp);
@@ -56,6 +69,9 @@ t_cmd	*parse_command(char *input);
 void	free_command(t_cmd *cmd);
 char	**split_input(char *input);
 int		count_words(char *input);
+char	*expand_variables(char *str);
+char	*handle_quotes(char *str);
+int		find_closing_quote(char *str, char quote_char);
 
 // Execution functions
 int		execute_command(t_cmd *cmd);
