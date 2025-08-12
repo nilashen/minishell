@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:14:43 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 16:23:03 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 19:40:04 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	execute_mysh(t_shell *shell, t_cmd *cmd)
 	if (ft_strncmp(cmd->args[0], "env", 4) == 0)
 		return (mysh_env(shell->envp));
 	if (ft_strncmp(cmd->args[0], "exit", 5) == 0)
-		return (mysh_exit(cmd->args));
+		return (mysh_exit(cmd->args, shell));
 	return (1);
 }
 int	commands_execution(t_shell *shell)

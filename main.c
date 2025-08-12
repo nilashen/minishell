@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:18:40 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 16:23:40 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 19:38:03 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	main(int argc, char **argv, char **envp)
 			arg1 = argv[2];
 
 		test_args = create_test_args("exit", arg1, NULL);
-		mysh_exit(test_args);
+		mysh_exit(test_args, NULL);
 	}
 	else
 	{

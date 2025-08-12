@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 16:25:53 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 19:37:26 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int					mysh_echo(char **argv);
 int					mysh_cd(char **argv, char ***envp);
 int					mysh_pwd(void);
 int					mysh_env(char **envp);
-int					mysh_exit(char **argv);
+int					mysh_exit(char **argv, t_shell *shell);
 int					main(int argc, char **argv, char **envp);
 int					mysh_export(char **args, char ***envp);
 int					env_count(char **envp);
@@ -84,4 +84,6 @@ void				handle_getcwd_error(void);
 void				handle_chdir_error(const char *arg);
 int					process_cd_command(char **args, int arg_count, char ***envp);
 int 				get_arg_count(char **args);
+int					handle_multiple_args(char **args);
+void				handle_single_arg(char *arg);
 #endif
