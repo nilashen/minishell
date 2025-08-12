@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_of _env.c                                    :+:      :+:    :+:   */
+/*   utils_of_env.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 19:10:24 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/03 13:33:52 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 11:46:29 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	env_set(char ***envp, char *key, char *value)
 	return (0);
 }
 
-static int	env_count(char **envp)
+int	env_count(char **envp)
 {
 	int	count;
 

@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 09:56:18 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/07 10:28:52 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 12:01:38 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ char	*find_executable_path(char *cmd, char **envp)
 		return (NULL);
 	if (ft_strchr(cmd, '/'))
 		return (check_executable(cmd));
-	path_env = env_get(envp, "PATH");
+	(void)envp;
+	path_env = getenv("PATH");
 	if (!path_env)
 		return (NULL);
 	result = search_in_path(cmd, path_env);

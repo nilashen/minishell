@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/09 18:29:10 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/12 11:48:47 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,6 @@ typedef enum e_token_type
 
 /* DATA STRUCTURES */
 
-typedef struct s_shell
-{
-	char			**envp;
-	int				last_exit_status;
-	t_cmd			*cmds;
-}					t_shell;
-
 typedef struct s_redir
 {
 	int				type;
@@ -61,10 +54,17 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }					t_cmd;
 
+typedef struct s_shell
+{
+	char			**envp;
+	int				last_exit_status;
+	t_cmd			*cmds;
+}					t_shell;
+
 /* FUNCTION PROTOTYPES */
 int					mysh_echo(char **argv);
-int					mysh_pwd(char **argv);
-int					mysh_cd(char **argv);
+int					mysh_cd(char **args);
+int					mysh_pwd(void);
 int					mysh_env(char **envp);
 int					mysh_exit(char **argv);
 int					main(int argc, char **argv, char **envp);
@@ -80,5 +80,6 @@ int					execute_mysh(t_shell *shell, t_cmd *cmd);
 int					setup_redirections(t_cmd *cmd);
 char				*find_executable_path(char *cmd, char **envp);
 int					execute_pipeline(t_shell *shell);
+void				handle_getcwd_error(void);
 
 #endif

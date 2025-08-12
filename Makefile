@@ -6,7 +6,7 @@
 #    By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 19:30:00 by nashena           #+#    #+#              #
-#    Updated: 2025/08/11 20:03:24 by nashena          ###   ########.fr        #
+#    Updated: 2025/08/12 12:03:01 by nashena          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,8 @@ SRCS = main.c \
        execution.c \
        path_finding_utils.c \
        redirections.c \
-       utils_of_env.c
+       utils_of_env.c \
+	   error_handling.c 
 
 # Object files
 OBJS = $(SRCS:.c=.o)
