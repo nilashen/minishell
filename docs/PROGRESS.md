@@ -20,6 +20,56 @@ minishell/
 
 ---
 
+## ✅ Step 4: Quote Handling & Variable Expansion
+**Goal**: Implement advanced parsing with quotes and environment variable expansion
+
+### Features Implemented
+- **Single quote handling**: `'text'` prevents all interpretation (literal strings)
+- **Double quote handling**: `"text with $VAR"` allows variable expansion only
+- **Environment variable expansion**: `$VAR` expands to environment variable values
+- **Exit status variable**: `$?` expands to last command's exit status
+- **Quote removal**: Properly removes quotes after processing content
+- **Exit status tracking**: Updates global variable after each command execution
+
+### Key Components
+- **Quote parser**: `handle_quotes()` processes different quote types
+- **Variable expander**: `expand_variables()` handles `$VAR` and `$?` expansion
+- **Exit status tracking**: `g_last_exit_status` global variable
+- **Enhanced tokenizer**: Updated `split_input()` to handle quotes and variables
+- **Quote finder**: `find_closing_quote()` locates matching quote pairs
+
+### Test Commands
+```bash
+# Variable expansion
+minishell$ export TEST_VAR=hello
+minishell$ echo $TEST_VAR
+hello
+
+# Exit status testing
+minishell$ ls /nonexistent
+ls: cannot access '/nonexistent': No such file or directory
+minishell$ echo $?
+2
+minishell$ echo success
+success
+minishell$ echo $?
+0
+
+# Single quotes (no expansion)
+minishell$ echo '$TEST_VAR and $?'
+$TEST_VAR and $?
+
+# Double quotes (with expansion)
+minishell$ echo "Hello $TEST_VAR, exit: $?"
+Hello hello, exit: 0
+
+# Mixed usage
+minishell$ echo 'literal: $TEST_VAR' and "expanded: $TEST_VAR"
+literal: $TEST_VAR and expanded: hello
+```
+
+---
+
 ## ✅ Step 3: Built-in Commands
 **Goal**: Implement shell built-in commands that run in the main process
 
@@ -158,22 +208,25 @@ minishell$ nonexistent_command
 - [x] Display interactive prompt
 - [x] Read user input with history
 - [x] Handle Ctrl+C, Ctrl+D, Ctrl+\ signals correctly  
-- [x] Parse simple commands (space-separated arguments)
+- [x] Parse commands with space-separated arguments
 - [x] Execute commands found in PATH
 - [x] Execute commands with absolute/relative paths
 - [x] Show error messages for invalid commands
 - [x] **Built-in commands: echo, cd, pwd, export, unset, env, exit**
 - [x] **Environment variable manipulation**
 - [x] **Directory navigation without forking**
+- [x] **Single quote handling (literal strings)**
+- [x] **Double quote handling (with variable expansion)**
+- [x] **Environment variable expansion ($VAR)**
+- [x] **Exit status variable ($?)**
+- [x] **Quote removal after processing**
 - [x] Proper memory management (no leaks except readline)
 - [x] Exit gracefully with `exit` command and status codes
 
 ### ⏳ Not Yet Implemented
-- [ ] Quote handling (single `'` and double `"` quotes)
-- [ ] Environment variable expansion (`$VAR`, `$?`)
 - [ ] Redirections (`<`, `>`, `<<`, `>>`)
 - [ ] Pipes (`|`)
-- [ ] Advanced parsing (handle special characters)
+- [ ] Advanced parsing (handle special characters like `;`, `\`)
 
 ---
 
@@ -203,6 +256,13 @@ minishell$ nonexistent_command
 - **Centralized dispatcher**: Single entry point routing to specific implementations
 - **State preservation**: Built-ins can modify shell environment and working directory
 - **Error consistency**: All built-ins follow similar error reporting patterns
+
+### Quote and Variable Processing
+- **Quote parsing**: Handles single and double quotes with proper nesting
+- **Variable expansion**: Supports environment variables and exit status
+- **Memory efficient**: Dynamic allocation with proper cleanup
+- **Context-aware**: Different behavior inside different quote types
+- **Error resilient**: Handles unclosed quotes gracefully
 
 ---
 
@@ -470,4 +530,4 @@ make fclean
 | `builtins.c` | Built-in commands implementation | `is_builtin()`, `builtin_*()` functions |
 | `minishell.h` | Header with all prototypes and structures | Structures, function prototypes |
 
-**Status**: ✅ Step 1, 2 & 3 Complete - Full shell with built-in commands working!
+**Status**: ✅ Step 1, 2, 3 & 4 Complete - Advanced shell with quotes and variables working!
