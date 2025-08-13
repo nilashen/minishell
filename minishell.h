@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 19:37:26 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/13 18:08:06 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,6 @@ int					process_cd_command(char **args, int arg_count, char ***envp);
 int 				get_arg_count(char **args);
 int					handle_multiple_args(char **args);
 void				handle_single_arg(char *arg);
+int					print_exported_vars(char **envp);
+int 				process_export_arg(char ***envp, char *arg);
 #endif

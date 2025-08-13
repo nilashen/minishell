@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 18:19:29 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/13 16:58:41 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,34 +97,21 @@ int mysh_exit(char **args, t_shell *shell)
 
 int	mysh_export(char **args, char ***envp)
 {
-	int		i;
-	char	*equal_sign;
-	char	*key;
-	char	*value;
+	int i;
+    int exit_status = 0;
 
-	if (!args[1])
-		return (mysh_env(*envp));
-	i = 1;
-	while (args[i])
-	{
-		equal_sign = ft_strchr(args[i], '=');
-		if (equal_sign)
-		{
-			*equal_sign = '\0';
-			key = args[i];
-			value = equal_sign + 1;
-			if (env_set(envp, key, value) != 0)
-				return (1);
-			*equal_sign = '=';
-		}
-		else
-		{
-			if (env_set(envp, args[i], "") != 0)
-				return (1);
-		}
-		i++;
-	}
-	return (0);
+    if (!args || !envp || !*envp)
+        return (1);
+    if (!args[1])
+        return (print_exported_vars(*envp));
+    i = 1;
+    while (args[i])
+    {
+        if (process_export_arg(envp, args[i]) != 0)
+            exit_status = 1;
+        i++;
+    }
+    return (exit_status);
 }
 
 int	mysh_unset(char **argv, char ***envp)

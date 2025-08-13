@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 19:10:24 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 11:46:29 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/13 15:59:37 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,28 @@ int	env_set(char ***envp, char *key, char *value)
 
 	if (!envp || !key)
 		return (-1);
-	temp = ft_strjoin(key, "=");
-	if (!temp)
-		return (-1);
-	new_var = ft_strjoin(temp, value);
-	free(temp);
-	if (!new_var)
-		return (-1);
+		if (value == NULL)
+		{
+			new_var = ft_strdup(key);
+			if (!new_var)
+				return (-1);
+		}
+		else
+		{
+			temp = ft_strjoin(key, "=");
+			if (!temp)
+				return (-1);
+			new_var = ft_strjoin(temp, value);
+			free(temp);
+			if (!new_var)
+				return (-1);
+		}
 	i = 0;
 	found = 0;
 	while ((*envp)[i])
 	{
 		if (ft_strncmp((*envp)[i], key, ft_strlen(key)) == 0
-			&& (*envp)[i][ft_strlen(key)] == '=')
+			&& ((*envp)[i][ft_strlen(key)] == '=' || (*envp)[i][ft_strlen(key)] == '\0'))
 		{
 			free((*envp)[i]);
 			(*envp)[i] = new_var;
