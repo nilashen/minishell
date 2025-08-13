@@ -50,7 +50,11 @@ LIBFT_SRC = ft_isalpha \
 			ft_putstr_fd \
 			ft_putendl_fd \
 			ft_putnbr_fd \
-			ft_strcmp 
+			ft_strcmp \
+			ft_strstr \
+			ft_strncpy \
+			ft_strcat \
+			ft_strcpy
 
 # ft_printf source files
 PRINTF_SRC = ft_printf \
