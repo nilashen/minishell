@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:11:25 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/13 16:58:41 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/17 12:38:31 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,16 +117,23 @@ int	mysh_export(char **args, char ***envp)
 int	mysh_unset(char **argv, char ***envp)
 {
 	int	i;
-
+	int exit_status;
+    int total_status;
+	
+	if (!argv)
+	return (1);
 	if (!envp || !*envp)
 		return (1);
 	if (!argv[1])
 		return (0);
+	total_status = 0;
 	i = 1;
 	while (argv[i])
 	{
-		env_unset(envp, argv[i]);
+		exit_status = env_unset(envp, argv[i]);
+		if (exit_status == -1)
+            total_status = 1;
 		i++;
 	}
-	return (0);
+	return (total_status);
 }
