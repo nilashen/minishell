@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 11:02:09 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/13 18:08:06 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/17 20:12:53 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <dirent.h>
 # include <errno.h>
 # include <limits.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -29,6 +31,7 @@
 # include <termios.h>
 # include <unistd.h>
 /* DEFINES */
+
 typedef enum e_token_type
 {
 	TOKEN_REDIR_IN,
@@ -61,6 +64,15 @@ typedef struct s_shell
 	t_cmd			*cmds;
 }					t_shell;
 
+typedef struct s_signal
+{
+	pid_t			pid;
+	int				exit_status;
+	int				sigint_received;
+	int				sigquit_received;
+}					t_signal;
+
+extern volatile t_signal g_sig;
 /* FUNCTION PROTOTYPES */
 int					mysh_echo(char **argv);
 int					mysh_cd(char **argv, char ***envp);
@@ -82,10 +94,24 @@ char				*find_executable_path(char *cmd, char **envp);
 int					execute_pipeline(t_shell *shell);
 void				handle_getcwd_error(void);
 void				handle_chdir_error(const char *arg);
-int					process_cd_command(char **args, int arg_count, char ***envp);
-int 				get_arg_count(char **args);
+int					process_cd_command(char **args, int arg_count,
+						char ***envp);
+int					get_arg_count(char **args);
 int					handle_multiple_args(char **args);
 void				handle_single_arg(char *arg);
 int					print_exported_vars(char **envp);
-int 				process_export_arg(char ***envp, char *arg);
+int					process_export_arg(char ***envp, char *arg);
+void				init_signals(void);
+void				cleanup_signals(void);
+void				signal_handler_interactive(int sig);
+void				signal_handler_child(int sig);
+void				setup_interactive_signals(void);
+void				setup_child_signals(void);
+void				restore_default_signals(void);
+void				set_child_pid(pid_t pid);
+int					get_exit_status(void);
+void				set_exit_status(int status);
+int					check_sigint(void);
+int					check_sigquit(void);
+void				handle_post_execution_signals(void);
 #endif

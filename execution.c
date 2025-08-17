@@ -6,7 +6,7 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 16:14:43 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/12 19:40:04 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/17 20:01:07 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,33 +77,46 @@ int	execute_single_cmd(t_shell *shell, t_cmd *cmd)
 	pid_t	pid;
 	int		status;
 	char	*path;
+	int     exit_code;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
 	if (setup_redirections(cmd) != 0)
 		return (1);
 	if (is_mysh(cmd->args[0]))
-		return (execute_mysh(shell, cmd));
+	{
+		int result = execute_mysh(shell, cmd);
+		set_exit_status(result);
+		return (result);
+	}
 	path = find_executable_path(cmd->args[0], shell->envp);
 	if (!path)
 	{
 		ft_printf("minishell: %s: command not found\n", cmd->args[0]);
+		set_exit_status(127);
 		return (127);
 	}
 	pid = fork();
 	if (pid == 0)
 	{
+		restore_default_signals();
 		execve(path, cmd->args, shell->envp);
 		perror("execve");
 		exit(126);
 	}
 	else if (pid > 0)
 	{
+		set_child_pid(pid);
 		waitpid(pid, &status, 0);
-		free(path);
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
-		return (1);
+		else if (WIFSIGNALED(status))
+            exit_code = 128 + WTERMSIG(status);
+        else
+            exit_code = 1;
+		handle_post_execution_signals();
+		free(path);
+        return (exit_code);
 	}
 	free(path);
 	return (1);
@@ -114,12 +127,15 @@ int	execute_pipeline(t_shell *shell)
 	int		pipe_fds[2];
 	int		prev_fd;
 	pid_t	pid;
+	pid_t	last_pid;
 	int		status;
 	int		last_status;
+	char	*path;
 
 	current = shell->cmds;
 	prev_fd = -1;
 	last_status = 0;
+	last_pid = 0;
 	while (current)
 	{
 		if (current->next && pipe(pipe_fds) == -1)
@@ -130,6 +146,7 @@ int	execute_pipeline(t_shell *shell)
 		pid = fork();
 		if (pid == 0)
 		{
+			restore_default_signals();
 			if (prev_fd != -1)
 			{
 				dup2(prev_fd, STDIN_FILENO);
@@ -148,7 +165,7 @@ int	execute_pipeline(t_shell *shell)
 				exit(execute_mysh(shell, current));
 			else
 			{
-				char *path = find_executable_path(current->args[0], shell->envp);
+				path = find_executable_path(current->args[0], shell->envp);
 				if (!path)
 				{
 					ft_printf("minishell: %s: command not found\n", current->args[0]);
@@ -170,14 +187,19 @@ int	execute_pipeline(t_shell *shell)
 			}
 			if (!current->next)
 			{
+				set_child_pid(last_pid);
 				waitpid(pid, &status, 0);
 				if (WIFEXITED(status))
 					last_status = WEXITSTATUS(status);
+				else if (WIFSIGNALED(status))
+                    last_status = 128 + WTERMSIG(status);
 			}
 		}
 		current = current->next;
 	}
 	while (wait(NULL) > 0)
 		;
+	handle_post_execution_signals();
+	set_exit_status(last_status);
 	return (last_status);
 }
