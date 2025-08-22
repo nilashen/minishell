@@ -6,7 +6,7 @@
 #    By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 19:30:00 by nashena           #+#    #+#              #
-#    Updated: 2025/08/17 16:15:58 by nashena          ###   ########.fr        #
+#    Updated: 2025/08/22 12:07:00 by nashena          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,9 @@ SRCS = main.c \
 	   utils_of_exit.c \
 	   utils_of_export.c \
 	   utils_of_unset.c \
-	   signal_handling.c 
+	   signal_handling.c \
+	   test_utils.c \
+	   test_builtins.c 
 
 # Object files
 OBJS = $(SRCS:.c=.o)
