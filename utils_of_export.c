@@ -6,12 +6,47 @@
 /*   By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 16:56:24 by nashena           #+#    #+#             */
-/*   Updated: 2025/08/13 18:49:54 by nashena          ###   ########.fr       */
+/*   Updated: 2025/08/20 15:45:18 by nashena          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
+
+static int find_env_var(char **envp, const char *key)
+{
+    int i;
+    int key_len;
+
+    if (!envp || !key)
+        return -1;
+
+    key_len = ft_strlen(key);
+    i = 0;
+    while (envp[i])
+    {
+        if (ft_strncmp(envp[i], key, key_len) == 0 &&
+            (envp[i][key_len] == '=' || envp[i][key_len] == '\0'))
+            return (i);
+        i++;
+    }
+    return (-1);
+}
+static char *get_env_value(char **envp, const char *key)
+{
+    int index;
+    char *equal_pos;
+
+    index = find_env_var(envp, key);
+    if (index == -1)
+        return NULL;
+
+    equal_pos = ft_strchr(envp[index], '=');
+    if (equal_pos)
+        return (equal_pos + 1);
+    return (NULL);
+}
 static int is_valid_identifier(const char *name)
 {
     if (!name || !*name)
@@ -78,9 +113,7 @@ int print_exported_vars(char **envp)
             *equal_pos = '=';
         }
         else
-        {
             printf("declare -x %s\n", sorted_env[i]);
-        }
         i++;
     }
     free(sorted_env);
@@ -93,7 +126,7 @@ static int handle_append_assignment(char ***envp, char *key, char *append_value)
     char *new_value;
     int result;
 
-    current_value = getenv(key);
+    current_value = get_env_value(*envp, key);
     if (current_value)
     {
         new_value = malloc(ft_strlen(current_value) + ft_strlen(append_value) + 1);
@@ -176,13 +209,10 @@ int process_export_arg(char ***envp, char *arg)
             ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
             return (1);
         }
-        if (getenv(arg))
-        {
-            return (0);
-        }
-        else
-        {
-            return (env_set(envp, arg, ""));
-        }
+		if (find_env_var(*envp, arg) == -1)
+		{
+			return env_set(envp, arg, NULL);
+		}
+		return (0);
     }
 }
