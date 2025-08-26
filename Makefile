@@ -1,119 +1,87 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: nashena <nashena@student.42heilbronn.de    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/08/11 19:30:00 by nashena           #+#    #+#              #
-#    Updated: 2025/08/22 12:07:00 by nashena          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME		:= minishell
 
-# Program name
-NAME = minishell
+LIBFT		:= libft.a
+LIBFT_PATH	:= "libraries/libft"
 
-# Compiler and flags
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-INCLUDES = -I. -I./library
+CC			:= cc
 
-# Libraries
-LIBUTILS_DIR = ./library
-LIBUTILS = $(LIBUTILS_DIR)/libutils.a
+CFLAGS		:= -Wall -Werror -Wextra
 
-# System libraries (for readline, termcap, etc.)
-LIBS = -lreadline -ltermcap
+BUILTINS	:=	builtins/cd.c \
+				builtins/echo.c \
+				builtins/env_utils.c \
+				builtins/env.c \
+				builtins/exit.c \
+				builtins/export.c \
+				builtins/pwd.c \
+				builtins/unset.c
 
-# Source files
-SRCS = main.c \
-       buildin.c \
-       execution.c \
-       path_finding_utils.c \
-       redirections.c \
-       utils_of_env.c \
-	   error_handling.c \
-	   utils_of_cd.c \
-	   utils_of_exit.c \
-	   utils_of_export.c \
-	   utils_of_unset.c \
-	   signal_handling.c \
-	   test_utils.c \
-	   test_builtins.c 
+CLEANING	:=	cleaning/ft_clean_ms.c
 
-# Object files
-OBJS = $(SRCS:.c=.o)
+EXEC		:=	exec/error_msg.c \
+				exec/exec_builtin.c \
+				exec/exec_redirect.c \
+				exec/exec_utils.c \
+				exec/exec.c \
+				exec/exist_check.c \
+				exec/ft_exec_simple_cmd.c \
+				exec/ft_get_path.c \
+				exec/init_tree.c
 
-# Colors for output
-GREEN = \033[0;32m
-RED = \033[0;31m
-BLUE = \033[0;34m
-RESET = \033[0m
+EXPANDER	:=	expander/ft_asterisker.c \
+				expander/ft_clean_empty_strs.c \
+				expander/ft_expand_utils.c \
+				expander/ft_expand.c \
+				expander/ft_expander_split.c \
+				expander/ft_globber_utils.c \
+				expander/ft_globber.c \
+				expander/ft_strip_quotes.c \
+				expander/heredoc_expander.c
 
-# Default target
+PARSING		:=	parsing/parser_clear.c \
+				parsing/parser_err.c \
+				parsing/parser_helpers.c \
+				parsing/parser_nodes.c \
+				parsing/parser_utils.c \
+				parsing/parser.c
+
+TOKENIZING	:=	tokenizing/tokenizer_appenders.c \
+				tokenizing/tokenizer_handlers.c \
+				tokenizing/tokenizer_lst.c \
+				tokenizing/tokenizer_utils.c \
+				tokenizing/tokenizer.c
+
+SRCS		:=	$(BUILTINS)\
+				$(CLEANING)\
+				$(EXEC)\
+				$(EXPANDER)\
+				$(PARSING)\
+				$(TOKENIZING)\
+				main.c main_signals.c
+
+OBJS		:=	$(SRCS:.c=.o)
+
+READLINE_PATH:=	/goinfre/homebrew/opt/readline
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@ -Iinclude -I$(READLINE_PATH)/include
+
 all: $(NAME)
 
-# Build the program
-$(NAME): $(LIBUTILS) $(OBJS)
-	@echo "$(BLUE)Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBUTILS) $(LIBS) -o $(NAME)
-	@echo "$(GREEN)✓ $(NAME) created successfully!$(RESET)"
+$(LIBFT):
+	@make -C $(LIBFT_PATH)
 
-# Build the library
-$(LIBUTILS):
-	@echo "$(BLUE)Building libutils...$(RESET)"
-	@make -C $(LIBUTILS_DIR)
+$(NAME): $(LIBFT) $(OBJS)
+	@$(CC) -o $(NAME) $(OBJS) -L$(LIBFT_PATH) -lft -L$(READLINE_PATH)/lib -lreadline
 
-# Compile source files
-%.o: %.c minishell.h
-	@echo "$(BLUE)Compiling $<...$(RESET)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-# Clean object files
 clean:
-	@echo "$(RED)Cleaning object files...$(RESET)"
+	@make clean -C $(LIBFT_PATH)
 	@rm -f $(OBJS)
-	@make -C $(LIBUTILS_DIR) clean
 
-# Clean everything
 fclean: clean
-	@echo "$(RED)Cleaning $(NAME)...$(RESET)"
+	@make fclean -C $(LIBFT_PATH)
 	@rm -f $(NAME)
-	@make -C $(LIBUTILS_DIR) fclean
 
-# Rebuild everything
 re: fclean all
 
-# Run the program
-run: $(NAME)
-	@echo "$(GREEN)Running $(NAME)...$(RESET)"
-	@./$(NAME)
-
-# Debug mode
-debug: CFLAGS += -fsanitize=address -fsanitize=undefined
-debug: $(NAME)
-
-# Check for memory leaks with valgrind
-leaks: $(NAME)
-	@echo "$(BLUE)Checking for memory leaks...$(RESET)"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
-
-# Install readline (if needed)
-install-readline:
-	@echo "$(BLUE)Installing readline...$(RESET)"
-	@brew install readline || sudo apt-get install libreadline-dev
-
-# Show help
-help:
-	@echo "$(GREEN)Available targets:$(RESET)"
-	@echo "  all          - Build the program"
-	@echo "  clean        - Remove object files"
-	@echo "  fclean       - Remove all generated files"
-	@echo "  re           - Rebuild everything"
-	@echo "  run          - Build and run the program"
-	@echo "  debug        - Build with debug flags"
-	@echo "  leaks        - Check for memory leaks"
-	@echo "  help         - Show this help message"
-
-# Phony targets
-.PHONY: all clean fclean re run debug leaks install-readline help
+.PHONY: all clean fclean re
