@@ -1,0 +1,97 @@
+[01;34m.[0m
+├── [01;34mbuiltin[0m
+│   ├── cd.c
+│   ├── echo.c
+│   ├── env.c
+│   ├── error.c
+│   ├── exit.c
+│   ├── export.c
+│   ├── pwd.c
+│   └── unset.c
+├── [01;34merror[0m
+│   ├── error_utils_2.c
+│   └── error_utils.c
+├── [01;34mexecutor[0m
+│   ├── exec.c
+│   └── exec_utils.c
+├── [01;34mgnl[0m
+│   └── get_next_line.c
+├── [01;34mincludes[0m
+│   ├── [01;34mlibft[0m
+│   │   ├── ft_atoi.c
+│   │   ├── ft_bzero.c
+│   │   ├── ft_calloc.c
+│   │   ├── ft_isalnum.c
+│   │   ├── ft_isalpha.c
+│   │   ├── ft_isascii.c
+│   │   ├── ft_isdigit.c
+│   │   ├── ft_isprint.c
+│   │   ├── ft_itoa.c
+│   │   ├── ft_lstadd_back.c
+│   │   ├── ft_lstadd_front.c
+│   │   ├── ft_lstlast.c
+│   │   ├── ft_lstnew.c
+│   │   ├── ft_lstsize.c
+│   │   ├── ft_memchr.c
+│   │   ├── ft_memcmp.c
+│   │   ├── ft_memcpy.c
+│   │   ├── ft_memmove.c
+│   │   ├── ft_memset.c
+│   │   ├── ft_putchar_fd.c
+│   │   ├── ft_putendl_fd.c
+│   │   ├── ft_putnbr_fd.c
+│   │   ├── ft_putstr_fd.c
+│   │   ├── ft_split.c
+│   │   ├── ft_strchr.c
+│   │   ├── ft_strdup.c
+│   │   ├── ft_striteri.c
+│   │   ├── ft_strjoin.c
+│   │   ├── ft_strlcat.c
+│   │   ├── ft_strlcpy.c
+│   │   ├── ft_strlen.c
+│   │   ├── ft_strmapi.c
+│   │   ├── ft_strncmp.c
+│   │   ├── ft_strnstr.c
+│   │   ├── ft_strrchr.c
+│   │   ├── ft_strtrim.c
+│   │   ├── ft_substr.c
+│   │   ├── ft_tolower.c
+│   │   ├── ft_toupper.c
+│   │   ├── libft.h
+│   │   └── Makefile
+│   └── minishell.h
+├── [01;34mlexer[0m
+│   ├── lexer_args.c
+│   ├── lexer_cluster.c
+│   ├── lexer_files.c
+│   ├── lexer_free.c
+│   ├── lexer_heredoc.c
+│   └── lexer_open.c
+├── main.c
+├── Makefile
+├── [01;34mparser[0m
+│   ├── parser_chars.c
+│   ├── parser_clean.c
+│   ├── parser_dollar.c
+│   ├── parser_dollar_expand.c
+│   ├── parser_env.c
+│   ├── parser_env_utils.c
+│   ├── parser_free.c
+│   ├── parser_len.c
+│   ├── parser_main.c
+│   ├── parser_nodes.c
+│   ├── parser_pipes.c
+│   ├── parser_quotes.c
+│   ├── parser_quotes_utils.c
+│   ├── parser_redirect_in.c
+│   ├── parser_redirect_out.c
+│   ├── parser_tilde.c
+│   └── parser_utils.c
+├── project_structure.txt
+├── README.md
+└── [01;34mutils[0m
+    ├── get_env.c
+    ├── route.c
+    └── signal.c
+
+10 directories, 85 files
