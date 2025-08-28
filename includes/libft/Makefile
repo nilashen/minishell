@@ -47,16 +47,11 @@ LIBFT_SRC = ft_isalpha \
 			ft_putstr_fd \
 			ft_putendl_fd \
 			ft_putnbr_fd \
-			ft_strcmp \
-			ft_strstr \
-			ft_strncpy \
-			ft_strcat \
-			ft_strcpy \
-			ft_lstadd_back.c \
-			ft_lstadd_front.c \
-			ft_lstlast.c \
-			ft_lstnew.c \
-			ft_lstsize.c
+			ft_lstadd_back \
+			ft_lstadd_front \
+			ft_lstlast \
+			ft_lstnew \
+			ft_lstsize
 
 # Create full paths for source files
 LIBFT_SRCS = $(addsuffix .c, $(LIBFT_SRC))
@@ -120,3 +115,4 @@ help:
 
 
 .PHONY: all clean fclean re help structure
+
