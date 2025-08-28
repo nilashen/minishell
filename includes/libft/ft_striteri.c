@@ -1,15 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_striteri.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/17 12:30:17 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/03/20 15:08:59 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 void	ft_striteri(char *s, void (*f)(unsigned int, char*))
 {
-	unsigned int	index;
+	unsigned int	i;
 
-	if (s == NULL || f == NULL)
-		return ;
-	index = 0;
-	while (*(s + index) != '\0')
+	i = 0;
+	if (s && f)
 	{
-		f (index, (s + index));
-		index++;
+		while (s[i])
+		{
+			f(i, s + i);
+			i++;
+		}
 	}
 }

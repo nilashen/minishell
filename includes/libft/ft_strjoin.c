@@ -1,20 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/16 11:09:27 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/03/20 16:09:31 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*joined_str;
-	size_t	lenght1;
-	size_t	lenght2;
+	size_t	i;
+	size_t	lens1;
+	char	*dst;
 
-	if (s1 == NULL || s2 == NULL)
+	lens1 = ft_strlen(s1);
+	i = -1;
+	dst = malloc(sizeof(char) * (lens1 + ft_strlen(s2) + 1));
+	if (dst == NULL)
 		return (NULL);
-	lenght1 = ft_strlen (s1);
-	lenght2 = ft_strlen (s2);
-	joined_str = (char *)malloc(lenght1 + lenght2 + 1);
-	if (joined_str == NULL)
-		return (NULL);
-	ft_memcpy (joined_str, s1, lenght1);
-	ft_memcpy (joined_str + lenght1, s2, lenght2);
-	*(joined_str + lenght1 + lenght2) = '\0';
-	return (joined_str);
+	while (s1[++i])
+		dst[i] = (char )s1[i];
+	i = -1;
+	while (s2[++i])
+	{
+		dst[lens1] = s2[i];
+		lens1++;
+	}
+	dst[lens1] = '\0';
+	return (dst);
 }
+// #include<stdio.h>
+// int main()
+// {
+// 	char * str1 = ft_strjoin("ftufh", "hdrhd");
+// 	// char str2[] = "World!";
+// 	printf("%s\n", str1);
+// }

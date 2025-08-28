@@ -1,29 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/12 17:39:33 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/03/20 15:08:30 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+void	*ft_memmove(void *ptr1, const void *ptr2, size_t n)
 {
-	unsigned char		*temp_dst;
-	const unsigned char	*temp_src;
+	size_t	i;
 
-	if (dst == NULL && src == NULL)
+	if (!ptr1 && !ptr2)
 		return (NULL);
-	temp_dst = (unsigned char *)dst;
-	temp_src = (const unsigned char *)src;
-	if (temp_dst < temp_src)
+	if ((unsigned char *)ptr1 < (unsigned char *)ptr2)
 	{
-		while (len--)
+		i = 0;
+		while (i < n)
 		{
-			*temp_dst++ = *temp_src++;
+			((unsigned char *)ptr1)[i] = ((unsigned char *)ptr2)[i];
+			i++;
 		}
 	}
 	else
 	{
-		temp_dst += len;
-		temp_src += len;
-		while (len--)
+		i = n;
+		while (i > 0)
 		{
-			*--temp_dst = *--temp_src;
+			((unsigned char *)ptr1)[i - 1] = ((unsigned char *)ptr2)[i - 1];
+			i--;
 		}
 	}
-	return (dst);
+	return (ptr1);
 }
+// #include <stdio.h>
+// #include <string.h>
+
+// // void *ft_memmove(void *ptr1, const void *ptr2, size_t n);
+// int main() {
+//     char str[] = "Hello, World!";
+//     memmove(str, str + 7, 7); // Copy "World!" to the left
+//     printf("Result: %s\n", str);
+//     return 0;
+// }

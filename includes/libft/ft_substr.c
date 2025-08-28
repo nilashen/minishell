@@ -1,27 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/13 15:55:18 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/03/20 15:09:32 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char	*sub_str;
-	size_t	str_lenght;
-	size_t	index;
+	char	*str;
+	size_t	i;
+	size_t	s_len;
+	size_t	max_len;
 
-	if (s == NULL)
+	i = 0;
+	s_len = ft_strlen(s);
+	if (!s)
 		return (NULL);
-	str_lenght = ft_strlen(s);
-	if ((size_t)start >= str_lenght)
-		return (ft_strdup (""));
-	if (len > str_lenght - (size_t)start)
-		len = str_lenght -(size_t)start;
-	sub_str = (char *)malloc(sizeof(char) * (len + 1));
-	if (!sub_str)
+	if (start >= s_len)
+		return (ft_strdup(""));
+	max_len = s_len - start;
+	if (len > max_len)
+		len = max_len;
+	str = malloc(sizeof(char) * (len + 1));
+	if (!str)
 		return (NULL);
-	index = 0;
-	while (index < len && *(s + (size_t)start + index))
+	while (i < len)
 	{
-		*(sub_str + index) = *(s + (size_t)start + index);
-		index++;
+		str[i] = s[i + start];
+		i++;
 	}
-	*(sub_str + index) = '\0';
-	return (sub_str);
+	str[i] = '\0';
+	return (str);
 }
+// #include<stdio.h>
+// int main()
+// {
+// 	// char *sub = ft_substr("Hello World", 6, 5);
+// 	// printf("%s\n", sub);  // Output: "World"
+// 	char *sub = ft_substr("42 School", 3, 20);
+// 	printf("%s\n", sub);  // Output: ""
+// 	free(sub);
+// }
