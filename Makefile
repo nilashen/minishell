@@ -33,7 +33,8 @@ GNL_SRCS = $(GNL_DIR)/get_next_line.c
 
 LEXER_SRCS = $(LEXER_DIR)/lexer_args.c $(LEXER_DIR)/lexer_cluster.c \
              $(LEXER_DIR)/lexer_files.c $(LEXER_DIR)/lexer_free.c \
-             $(LEXER_DIR)/lexer_heredoc.c $(LEXER_DIR)/lexer_open.c
+             $(LEXER_DIR)/lexer_heredoc.c $(LEXER_DIR)/lexer_open.c \
+             $(LEXER_DIR)/lexer_args_utils.c
 
 PARSER_SRCS = $(PARSER_DIR)/parser_chars.c $(PARSER_DIR)/parser_clean.c \
               $(PARSER_DIR)/parser_dollar.c $(PARSER_DIR)/parser_dollar_expand.c \

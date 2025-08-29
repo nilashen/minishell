@@ -221,6 +221,8 @@ t_cluster	*ft_file_open_error(t_cluster *cluster, char *file);
 void		ft_print_env(t_state *state, t_cluster *cluster);
 void		ft_route(t_state *state, t_cluster *tmp);
 int			ft_check_built(t_cluster *cluster);
+char		**ft_find_cmd_safe(char **arg, int len);
+int			ft_check_redirect_public(char *arg);
 
 //					executer functions 
 void		ft_close_pipe(t_state *state, int check);
