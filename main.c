@@ -34,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 		g_sig_status = 0;
 		ft_sep_path(state);
 		state->pars->ptr_errno = &(state->error);
-		state->line = readline("minishell>");
+		state->line = readline("minishell$>");
 		if (state->line && ft_wait_for_input(state) == 1)
 			add_history(state->line);
 		if (ft_parser(state))
