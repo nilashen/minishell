@@ -64,6 +64,8 @@ static int	ft_quote_handler(char *str, char *tmp, int len, t_parser *prs)
 			return (1);
 		prs->check_if = 1;
 	}
+	if (tmp)
+		free(tmp);
 	return (0);
 }
 
