@@ -70,24 +70,12 @@ static int	ft_quote_handler(char *str, char *tmp, int len, t_parser *prs)
 int	ft_quote_check(char *str, int len, t_parser *pars)
 {
 	char	*tmp;
-	char	*new_str;
+	int		result;
 
-	new_str = ft_substr(str, 0, (size_t)len);
 	tmp = NULL;
 	ft_init_paremeter(pars);
-	if (ft_quote_handler(new_str, tmp, len, pars) == 1)
-	{
-		free(new_str);
-		return (1);
-	}
-	ft_init_paremeter(pars);
-	if (ft_quote_handler(new_str, tmp, len, pars) == 2)
-	{
-		free(new_str);
-		return (2);
-	}
-	free(new_str);
+	result = ft_quote_handler(str, tmp, len, pars);
 	if (tmp != NULL)
 		free(tmp);
-	return (0);
+	return (result);
 }

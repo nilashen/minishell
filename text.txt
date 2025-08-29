@@ -1,0 +1,201 @@
+✅ Minishell Test Plan (Full Coverage)
+1. Prompt & Basic Execution
+
+ Starts with a prompt (minishell$) when waiting for input.
+
+ Empty input (press Enter) → does nothing (just new prompt).
+
+ Run ls → lists files.
+
+ Run /bin/ls → absolute path works.
+
+ Run relative binary (./a.out).
+
+ Run nonexistent → prints error, exit status 127.
+
+ Run ./minishell recursively → should work (like bash).
+
+2. Quotes Handling
+
+ echo hello world → prints hello world.
+
+ echo "hello world" → prints hello world.
+
+ echo 'hello world' → prints hello world.
+
+ echo "hello $USER" → expands variable.
+
+ echo '$USER' → prints literally $USER.
+
+ echo "mix 'quotes' here" → preserves correctly.
+
+ Unterminated quotes:
+
+echo "hello → should wait for closing ".
+
+echo 'world → should wait for closing '.
+
+3. Environment Variables
+
+ echo $USER → prints username.
+
+ echo $HOME → prints home dir.
+
+ echo $PATH → prints PATH.
+
+ echo $? after successful cmd (ls) → prints 0.
+
+ echo $? after invalid cmd (foo) → prints 127.
+
+ echo $$ → prints minishell’s PID.
+
+ export VAR=hello && echo $VAR → prints hello.
+
+ unset VAR && echo $VAR → prints empty.
+
+ export VAR1=1 VAR2=2 && env | grep VAR → both appear.
+
+ export VAR= (empty) → variable exists with empty value.
+
+4. Redirections
+
+ echo hello > out.txt → file contains hello.
+
+ cat < out.txt → prints hello.
+
+ echo world >> out.txt && cat out.txt → file contains both hello and world.
+
+ cat < nonexist.txt → error, exit code 1.
+
+ ls > /dev/null → suppresses output.
+
+ cat << EOF then type lines until EOF.
+
+ Nested heredocs:
+
+cat << END1 | cat << END2
+foo
+END1
+bar
+END2
+
+5. Pipes
+
+ ls | wc -l → prints file count.
+
+ echo hello | cat -e → hello$.
+
+ cat file.txt | grep hi | wc -l.
+
+ echo 42 | grep 43 → no output, exit status 1.
+
+ Multiple pipes: ls | grep minishell | wc -l.
+
+ Invalid: | ls → syntax error.
+
+ Invalid: ls | → syntax error.
+
+6. Builtins
+
+echo
+
+ echo hello → prints hello.
+
+ echo -n hello → no newline.
+
+ echo -nnn hello → should behave like -n.
+
+cd
+
+ cd .. && pwd → updates dir.
+
+ cd with no args → goes to $HOME.
+
+ cd /tmp → absolute path works.
+
+ cd nonexistent → error.
+
+pwd
+
+ pwd → prints current dir.
+
+export
+
+ export TEST=42 && env | grep TEST → prints.
+
+ export INVALID-VAR=1 → error (invalid identifier).
+
+unset
+
+ unset TEST && env | grep TEST → gone.
+
+ unset on nonexistent var → does nothing.
+
+env
+
+ env → prints env vars.
+
+exit
+
+ exit → exits minishell.
+
+ exit 42 → exits with code 42.
+
+ exit 1 2 → error, should not exit immediately.
+
+7. Signals
+
+ Run minishell → press:
+
+Ctrl-C → prints new prompt (does not exit).
+
+Ctrl-D → exits minishell.
+
+Ctrl-\ → does nothing.
+
+ Run cat, then:
+
+Ctrl-C → stops cat.
+
+Ctrl-\ → quits with "Quit: 3".
+
+8. Error Handling
+
+ ls > → syntax error.
+
+ echo hello | → syntax error.
+
+ cat << → syntax error.
+
+ exit a → error, but minishell doesn’t crash.
+
+ Too many args: exit 1 2 3 → bash-like error.
+
+ Invalid command name: ./\foo → error.
+
+9. Memory Leaks & Stability
+
+ Run all tests under:
+
+valgrind --leak-check=full --show-leak-kinds=all ./minishell
+
+
+ No leaks (except readline).
+
+ No double-free, no invalid read/write.
+
+ Handle huge input line (several KB).
+
+ Run many commands in a row (stress test).
+
+10. Bonus (if implemented)
+
+ echo hi && echo bye → executes both.
+
+ false && echo fail → should not print.
+
+ false || echo recover → should print.
+
+ (echo hello && echo world) || echo fail.
+
+ echo * → expands to files in current dir.

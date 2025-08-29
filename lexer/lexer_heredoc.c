@@ -21,18 +21,12 @@ static	int	ft_parent_heredoc(t_files *node, int pid)
 {
 	int	status;
 
-	g_sig_status = IN_PARENT;
 	waitpid(pid, &status, 0);
+	close(node->fd_heredoc[1]);
 	if (status != 0)
-	{
-		close(node->fd_heredoc[1]);
 		return (3);
-	}
 	else
-	{
-		close(node->fd_heredoc[1]);
 		return (0);
-	}
 }
 
 static int	ft_heredoc(t_files *node)
@@ -41,12 +35,14 @@ static int	ft_heredoc(t_files *node)
 	char	*line;
 	int		status;
 
+	status = 0;
 	pipe(node->fd_heredoc);
 	pid = fork();
-	status = 0;
+	
 	if (pid == 0)
 	{
 		g_sig_status = IN_HERADOC;
+		signal(SIGINT, SIG_DFL);
 		while (1)
 		{
 			line = readline(">");
@@ -54,7 +50,11 @@ static int	ft_heredoc(t_files *node)
 		}
 	}
 	else
+	{
+		g_sig_status = IN_PARENT;
 		status = ft_parent_heredoc(node, pid);
+		g_sig_status = 0;
+	}
 	return (status);
 }
 
