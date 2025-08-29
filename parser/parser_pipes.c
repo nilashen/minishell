@@ -61,11 +61,29 @@ char	**ft_pipe_split(char *s, char c, t_parser *pars)
 	return (dest);
 }
 
+static int	ft_check_consecutive_pipes(char *line, int *i)
+{
+	int	pipe_count;
+
+	pipe_count = 0;
+	while (line[*i] == '|')
+	{
+		pipe_count++;
+		(*i)++;
+	}
+	if (pipe_count > 1)
+		return (1);
+	while (line[*i] == ' ')
+		(*i)++;
+	if (line[*i] == '|')
+		return (1);
+	(*i)--;
+	return (0);
+}
+
 int	ft_pipe_check(char *line, t_parser *parser)
 {
 	int		i;
-	int		start;
-	char	*sub;
 
 	i = -1;
 	if (line[0] == '|' || line[ft_strlen(line) - 1] == '|')
@@ -74,17 +92,8 @@ int	ft_pipe_check(char *line, t_parser *parser)
 	{
 		if (line[i] == '|' && !ft_quote_check(line, i, parser))
 		{
-			start = i +1;
-			while (line[i] && (line[i] == '|' || line[i] == ' '))
-				i++;
-			sub = ft_substr(line, start, i - start);
-			if (ft_strchr(sub, '|'))
-			{
-				free(sub);
+			if (ft_check_consecutive_pipes(line, &i))
 				return (1);
-			}
-			else
-				free(sub);
 		}
 	}
 	return (0);
