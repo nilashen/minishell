@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	ft_exex_file_check(t_state *state, t_cluster *cluster)
+static int	ft_exex_file_check(t_state *state, t_cluster *cluster)
 {
 	struct stat	file_info;
 
@@ -11,23 +11,33 @@ static void	ft_exex_file_check(t_state *state, t_cluster *cluster)
 			if (file_info.st_mode & S_IXUSR)
 			{
 				execve(cluster->cmd[0], cluster->cmd, state->envp);
-				exit(0);
+				exit(0); 
 			}
 			else
+			{
 				ft_executer_error(cluster->cmd, "permission denied", 126);
+				return (1);
+			}
 		}
 		else
 		{
 			if (ft_strcmp(state->cluster->cmd[0], ".") == 0)
-				ft_executer_error(cluster->cmd, "filename argument required",
-					2);
+				ft_executer_error(cluster->cmd, "filename argument required", 2);
 			else if (ft_strcmp(state->cluster->cmd[0], "..") == 0)
-				ft_executer_error(cluster->cmd, "commond not found", 127);
+				ft_executer_error(cluster->cmd, "command not found", 127);
 			else
 				ft_executer_error(cluster->cmd, "is a directory", 126);
+			return (1);
 		}
 	}
+	else
+	{
+		ft_executer_error(cluster->cmd, "No such file or directory", 127);
+		return (1);
+	}
+	return (0); 
 }
+
 
 static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
 {
@@ -35,11 +45,16 @@ static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
 	char	*command;
 	int		i;
 
-	i = 0;
 	if (cluster->cmd[0] == NULL)
 		return (NULL);
+
 	if (cluster->cmd[0][0] == '/' || cluster->cmd[0][0] == '.')
-		ft_exex_file_check(state, cluster);
+	{
+		if (ft_exex_file_check(state, cluster)) 
+			return (NULL); 
+	}
+
+	i = 0;
 	while (state->sep_path[i])
 	{
 		tmp = ft_strjoin(state->sep_path[i], "/");
@@ -47,9 +62,10 @@ static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
 		free(tmp);
 		if (access(command, X_OK) == 0)
 			execve(command, cluster->cmd, state->envp);
-		free (command);
+		free(command);
 		i++;
 	}
+	ft_executer_error(cluster->cmd, "command not found", 127);
 	return (NULL);
 }
 
@@ -81,6 +97,7 @@ static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 		exit(0);
 	}
 	cmd_path = ft_cmd_get(state, cluster);
+	ft_reset_signals_child();
 	if (cmd_path == NULL && cluster->cmd[0] != NULL)
 	{
 		ft_executer_error(cluster->cmd, "command not found", 127);
@@ -107,7 +124,10 @@ void	ft_executer(t_state *state, int i)
 				g_sig_status = 1;
 				tmp->pid = fork();
 				if (tmp->pid == 0)
+				{
+					ft_reset_signals_child();
 					ft_execve(state, tmp, i, check);
+				}
 			}
 			i++;
 		}

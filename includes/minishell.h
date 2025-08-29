@@ -13,6 +13,7 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <signal.h>
+#include <termios.h>
 
 # define IN_CAT 1
 # define IN_HERADOC 2
@@ -205,6 +206,8 @@ char		*ft_clean_first_last_quote(char *str);
 void		ft_free_thrd_str(char ***str);
 int			ft_check_full_char(char *str, char c, int len);
 void		ft_init_signals(void);
+void		ft_reset_signals_child(void);
+void		disable_quit_echo(void);
 
 //					lexer functions
 void		ft_cluster(t_state *state);

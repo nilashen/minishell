@@ -16,6 +16,7 @@ static void	ft_init_program(int argc, char **argv, char **envp, t_state **state)
 		ft_error_mesage("Error: Malloc problem !");
 	g_sig_status = 0;
 	ft_init_signals();
+	disable_quit_echo();
 	(*state)->env = get_env(*state, envp);
 	(*state)->exp = get_env(*state, envp);
 	(*state)->envp = envp;
@@ -29,12 +30,13 @@ int	main(int argc, char **argv, char **envp)
 	t_state	*state;
 
 	ft_init_program(argc, argv, envp, &state);
+	ft_init_signals();
 	while (1)
 	{
 		g_sig_status = 0;
 		ft_sep_path(state);
 		state->pars->ptr_errno = &(state->error);
-		state->line = readline("minishell$>");
+		state->line = readline("minishell>");
 		if (state->line && ft_wait_for_input(state) == 1)
 			add_history(state->line);
 		if (ft_parser(state))
