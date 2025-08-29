@@ -19,7 +19,11 @@ static	t_files	*ft_files_init_input(t_files *node, char *arg)
 		close(node->fd_input);
 	node->fd_input = ft_open_input(node->input);
 	if (node->fd_input == -1)
+	{
+		if (node->fd_output > 2)
+			close(node->fd_output);
 		node->error = 1;
+	}
 	return (node);
 }
 
@@ -31,7 +35,11 @@ static	t_files	*ft_files_init_output(t_files *node, char *arg, int *i)
 		close(node->fd_output);
 	node->fd_output = ft_open_output(node->output);
 	if (node->fd_output == -1)
+	{
+		if (node->fd_input > 2)
+			close(node->fd_input);
 		node->error = 2;
+	}
 	(*i)++;
 	return (node);
 }
@@ -44,7 +52,11 @@ static t_files	*ft_files_init_append(t_files *node, char *arg, int *i)
 		close(node->fd_output);
 	node->fd_output = ft_open_append(node->output);
 	if (node->fd_output == -1)
+	{
+		if (node->fd_input > 2)
+			close(node->fd_input);
 		node->error = 2;
+	}
 	(*i)++;
 	return (node);
 }
