@@ -223,6 +223,7 @@ void		ft_route(t_state *state, t_cluster *tmp);
 int			ft_check_built(t_cluster *cluster);
 char		**ft_find_cmd_safe(char **arg, int len);
 int			ft_check_redirect_public(char *arg);
+t_cluster	*ft_new_cluster_node(char **arg); 
 
 //					executer functions 
 void		ft_close_pipe(t_state *state, int check);
