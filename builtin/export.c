@@ -42,31 +42,7 @@ void	bubble_sort(t_env *exp, int (*cmp)(char *, char *))
 
 void	ft_print_exp(t_state **state, t_cluster *cluster)
 {
-	t_env	*tmp;
-	int		fd;
-
-	fd = cluster->files->fd_output;
-	tmp = (*state)->exp;
-	while (tmp)
-	{
-		if (tmp->value == NULL)
-		{
-			write(fd, "declare -x ", ft_strlen("declare -x "));
-			write(fd, tmp->key, ft_strlen(tmp->key));
-			write(fd, "=\"", 3);
-			write(fd, "\"\n", 3);
-		}
-		else
-		{
-			write(fd, "declare -x ", ft_strlen("declare -x "));
-			write(fd, tmp->key, ft_strlen(tmp->key));
-			write(fd, "=\"", 3);
-			write(fd, tmp->value, ft_strlen(tmp->value));
-			write(fd, "\"\n", 3);
-		}
-		tmp = tmp->next;
-	}
-	(*state)->error = 0;
+	ft_print_export_vars(state, cluster);
 }
 
 void	ft_add_exp(t_state **state, char *arg)
