@@ -1,74 +1,5 @@
 #include "../includes/minishell.h"
 
-static int	ft_exex_file_check(t_state *state, t_cluster *cluster)
-{
-	struct stat	file_info;
-
-	if (stat(cluster->cmd[0], &file_info) == 0)
-	{
-		if (S_ISREG(file_info.st_mode))
-		{
-			if (file_info.st_mode & S_IXUSR)
-			{
-				execve(cluster->cmd[0], cluster->cmd, state->envp);
-				exit(0); 
-			}
-			else
-			{
-				ft_executer_error(cluster->cmd, "permission denied", 126);
-				return (1);
-			}
-		}
-		else
-		{
-			if (ft_strcmp(state->cluster->cmd[0], ".") == 0)
-				ft_executer_error(cluster->cmd, "filename argument required", 2);
-			else if (ft_strcmp(state->cluster->cmd[0], "..") == 0)
-				ft_executer_error(cluster->cmd, "command not found", 127);
-			else
-				ft_executer_error(cluster->cmd, "is a directory", 126);
-			return (1);
-		}
-	}
-	else
-	{
-		ft_executer_error(cluster->cmd, "No such file or directory", 127);
-		return (1);
-	}
-	return (0); 
-}
-
-
-static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
-{
-	char	*tmp;
-	char	*command;
-	int		i;
-
-	if (cluster->cmd[0] == NULL)
-		return (NULL);
-
-	if (cluster->cmd[0][0] == '/' || cluster->cmd[0][0] == '.')
-	{
-		if (ft_exex_file_check(state, cluster)) 
-			return (NULL); 
-	}
-
-	i = 0;
-	while (state->sep_path[i])
-	{
-		tmp = ft_strjoin(state->sep_path[i], "/");
-		command = ft_strjoin(tmp, cluster->cmd[0]);
-		free(tmp);
-		if (access(command, X_OK) == 0)
-			execve(command, cluster->cmd, state->envp);
-		free(command);
-		i++;
-	}
-	ft_executer_error(cluster->cmd, "command not found", 127);
-	return (NULL);
-}
-
 static void	ft_open_pipes(t_state *state)
 {
 	int	**fd;
@@ -83,6 +14,12 @@ static void	ft_open_pipes(t_state *state)
 	i = -1 ;
 	while (++i < state->cmd_count - 1)
 		pipe(state->fd[i]);
+}
+
+static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
+{
+	ft_find_and_exec_command(state, cluster);
+	return (NULL);
 }
 
 static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
@@ -105,6 +42,27 @@ static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 	exit(0);
 }
 
+static void	ft_process_cluster(t_state *state, t_cluster *tmp, int *i, int *check)
+{
+	*check = ft_check_built(tmp);
+	if (tmp->cmd)
+	{
+		if (*check > 0 && state->cmd_count == 1)
+			ft_route(state, tmp);
+		else
+		{
+			g_sig_status = 1;
+			tmp->pid = fork();
+			if (tmp->pid == 0)
+			{
+				ft_reset_signals_child();
+				ft_execve(state, tmp, *i, *check);
+			}
+		}
+		(*i)++;
+	}
+}
+
 void	ft_executer(t_state *state, int i)
 {
 	t_cluster	*tmp;
@@ -114,23 +72,7 @@ void	ft_executer(t_state *state, int i)
 	tmp = state->cluster;
 	while (tmp)
 	{
-		check = ft_check_built(tmp);
-		if (tmp->cmd)
-		{
-			if (check > 0 && state->cmd_count == 1)
-				ft_route(state, tmp);
-			else
-			{
-				g_sig_status = 1;
-				tmp->pid = fork();
-				if (tmp->pid == 0)
-				{
-					ft_reset_signals_child();
-					ft_execve(state, tmp, i, check);
-				}
-			}
-			i++;
-		}
+		ft_process_cluster(state, tmp, &i, &check);
 		tmp = tmp->next;
 	}
 	ft_close_pipe(state, check);
