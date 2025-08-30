@@ -27,7 +27,8 @@ BUILTIN_SRCS = $(BUILTIN_DIR)/cd.c $(BUILTIN_DIR)/echo.c $(BUILTIN_DIR)/env.c \
 
 ERROR_SRCS = $(ERROR_DIR)/error_utils.c $(ERROR_DIR)/error_utils_2.c
 
-EXECUTOR_SRCS = $(EXECUTOR_DIR)/exec.c $(EXECUTOR_DIR)/exec_utils.c
+EXECUTOR_SRCS = $(EXECUTOR_DIR)/exec.c $(EXECUTOR_DIR)/exec_utils.c \
+                $(EXECUTOR_DIR)/exec_path.c $(EXECUTOR_DIR)/exec_file_check.c
 
 GNL_SRCS = $(GNL_DIR)/get_next_line.c
 
