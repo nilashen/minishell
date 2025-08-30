@@ -1,5 +1,15 @@
 #include "../includes/minishell.h"
 
+static int	ft_get_current_dir(char *pwd, size_t size)
+{
+	if (getcwd(pwd, size) == NULL)
+	{
+		perror("getcwd");
+		return (1);
+	}
+	return (0);
+}
+
 static void	ft_dir_check(t_state **state, char *dir)
 {
 	struct stat	file_info;
@@ -78,7 +88,11 @@ void	ft_cd(t_state **state)
 	char		pwd[1024];
 	char		*oldpwd;
 
-	getcwd(pwd, sizeof(pwd));
+	if (ft_get_current_dir(pwd, sizeof(pwd)))
+	{
+		(*state)->error = 1;
+		return;
+	}
 	tmp = (*state)->cluster;
 	if (tmp->cmd == NULL || tmp->cmd[1] == NULL)
 		ft_select_dir(state, "HOME");
