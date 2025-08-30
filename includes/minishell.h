@@ -14,6 +14,7 @@
 # include <fcntl.h>
 # include <signal.h>
 #include <termios.h>
+#include <limits.h>
 
 # define IN_CAT 1
 # define IN_HERADOC 2
@@ -136,6 +137,7 @@ void		ft_print_exp(t_state **state, t_cluster *cluster);
 void		ft_add_exp(t_state **state, char *arg);
 void		ft_del_node(t_env **list, char *key);
 void		ft_export_status(t_state **state, t_cluster *cluster);
+void		ft_print_export_vars(t_state **state, t_cluster *cluster);
 void		ft_key_error(char *s, char *cmd, t_state *state);
 int			ft_key_check(char arg, int index);
 void		ft_clean_env(t_env **env);
