@@ -20,7 +20,7 @@ static void	ft_handle_env_commands(t_state *state, t_cluster *tmp)
 	if (ft_strcmp(tmp->cmd[0], "export") == 0)
 	{
 		if (state->cmd_count > 1)
-			exit(0);
+			exit(state->error);
 		ft_export_status(&state, tmp);
 	}
 	else if ((ft_strcmp(tmp->cmd[0], "env") == 0
@@ -29,7 +29,7 @@ static void	ft_handle_env_commands(t_state *state, t_cluster *tmp)
 	else if (ft_strcmp(tmp->cmd[0], "unset") == 0)
 	{
 		if (state->cmd_count > 1)
-			exit(0);
+			exit(state->error);
 		ft_del_env(&state, tmp);
 	}
 }
@@ -74,4 +74,6 @@ void	ft_route(t_state *state, t_cluster *tmp)
 	if (tmp->cmd == NULL)
 		return;
 	ft_handle_other_commands(state, tmp);
+	if (state->cmd_count > 1 && ft_check_built(tmp) > 0)
+		exit(state->error);
 }

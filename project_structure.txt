@@ -6,6 +6,7 @@
 │   ├── error.c
 │   ├── exit.c
 │   ├── export.c
+│   ├── export_utils.c
 │   ├── pwd.c
 │   └── unset.c
 ├── [01;34merror[0m
@@ -13,6 +14,8 @@
 │   └── error_utils.c
 ├── [01;34mexecutor[0m
 │   ├── exec.c
+│   ├── exec_file_check.c
+│   ├── exec_path.c
 │   └── exec_utils.c
 ├── [01;34mgnl[0m
 │   └── get_next_line.c
@@ -62,7 +65,9 @@
 │   └── minishell.h
 ├── [01;34mlexer[0m
 │   ├── lexer_args.c
+│   ├── lexer_args_utils.c
 │   ├── lexer_cluster.c
+│   ├── lexer_cluster_utils.c
 │   ├── lexer_files.c
 │   ├── lexer_free.c
 │   ├── lexer_heredoc.c
@@ -94,4 +99,4 @@
     ├── route.c
     └── signal.c
 
-10 directories, 85 files
+10 directories, 90 files
