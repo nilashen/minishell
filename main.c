@@ -40,6 +40,7 @@ static void	ft_init_state_values(t_state *state, char **envp)
 	state->exp = get_env(state, envp);
 	state->envp = envp;
 	state->error = 0;
+	state->dolar = NULL;
 	state->cluster = NULL;
 	state->fd = NULL;
 }

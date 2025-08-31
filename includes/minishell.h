@@ -243,5 +243,6 @@ void		ft_tilda_handler(t_state *state);
 void		ft_cluster_free(t_cluster *cluster);
 void		ft_find_and_exec_command(t_state *state, t_cluster *cluster);
 int			ft_check_executable_file(t_state *state, t_cluster *cluster);
+int			ft_handle_empty_command(t_cluster *cluster);
 
 #endif

@@ -21,18 +21,24 @@ void	ft_wait(t_state *state, int check)
 {
 	t_cluster	*tmp;
 	int			result;
+	int			exit_status;
 
 	tmp = state->cluster;
+	exit_status = 0;
 	while (tmp)
 	{
 		if (tmp->pid > 0)
 		{
 			waitpid(tmp->pid, &result, 0);
-			if (!(check > 0))
-				state->error = result >> 8;
+			if (WIFEXITED(result))
+				exit_status = WEXITSTATUS(result);
+			else if (WIFSIGNALED(result))
+				exit_status = 128 + WTERMSIG(result);
 		}
 		tmp = tmp->next;
 	}
+	if (check <= 0)
+		state->error = exit_status;
 	ft_int_free(state);
 }
 
@@ -43,10 +49,13 @@ void	ft_close_pipe(t_state *state, int check)
 	i = 0;
 	while (i < state->cmd_count -1)
 	{
-		if (state->fd[i][0])
-			close(state->fd[i][0]);
-		if (state->fd[i][1])
-			close(state->fd[i][1]);
+		if (state->fd && state->fd[i])
+		{
+			if (state->fd[i][0] > 0)
+				close(state->fd[i][0]);
+			if (state->fd[i][1] > 0)
+				close(state->fd[i][1]);
+		}
 		i++;
 	}
 	ft_wait(state, check);
@@ -57,17 +66,17 @@ void	ft_pipe_connect(t_state *state, t_cluster *cluster, int i, int check)
 	int	j;
 
 	(void)check;
-	if (state->cluster == cluster)  // First command
+	if (state->cluster == cluster)
 		dup2(state->fd[i][1], STDOUT_FILENO);
-	else if (cluster->next == NULL)  // Last command
+	else if (cluster->next == NULL)
 		dup2(state->fd[i - 1][0], STDIN_FILENO);
-	else  // Middle command
+	else
 	{
 		dup2(state->fd[i - 1][0], STDIN_FILENO);
 		dup2(state->fd[i][1], STDOUT_FILENO);
 	}
 	j = 0;
-	while (j < state->cmd_count - 1)  // Close ALL pipe fds in child
+	while (j < state->cmd_count - 1)
 	{
 		close(state->fd[j][0]);
 		close(state->fd[j][1]);

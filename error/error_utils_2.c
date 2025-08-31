@@ -1,34 +1,72 @@
 #include "../includes/minishell.h"
 
-void	ft_cluster_free(t_cluster *cluster)
+static void	ft_free_cluster_cmd(t_cluster *cluster)
 {
 	int	i;
 
+	if (!cluster || !cluster->cmd)
+		return ;
 	i = 0;
 	while (cluster->cmd[i])
-		free(cluster->cmd[i++]);
-	if (cluster->files->heredoc)
-		free(cluster->files->heredoc);
+	{
+		free(cluster->cmd[i]);
+		cluster->cmd[i] = NULL;
+		i++;
+	}
 	free(cluster->cmd);
-	free(cluster->files->input);
-	free(cluster->files->output);
-	free(cluster->files);
+	cluster->cmd = NULL;
+}
+
+static void	ft_close_cluster_fds(t_cluster *cluster)
+{
+	if (!cluster || !cluster->files)
+		return ;
+	if (cluster->files->fd_input > 2)
+		close(cluster->files->fd_input);
+	if (cluster->files->fd_output > 2)
+		close(cluster->files->fd_output);
+}
+
+static void	ft_free_cluster_files_strings(t_cluster *cluster)
+{
+	if (!cluster || !cluster->files)
+		return ;
+	if (cluster->files->heredoc)
+	{
+		free(cluster->files->heredoc);
+		cluster->files->heredoc = NULL;
+	}
+	if (cluster->files->input)
+	{
+		free(cluster->files->input);
+		cluster->files->input = NULL;
+	}
+	if (cluster->files->output)
+	{
+		free(cluster->files->output);
+		cluster->files->output = NULL;
+	}
+}
+
+void	ft_cluster_free(t_cluster *cluster)
+{
+	if (!cluster)
+		return ;
+	ft_free_cluster_cmd(cluster);
+	ft_close_cluster_fds(cluster);
+	ft_free_cluster_files_strings(cluster);
+	if (cluster->files)
+	{
+		free(cluster->files);
+		cluster->files = NULL;
+	}
 	free(cluster);
 }
 
 t_cluster	*ft_file_open_error(t_cluster *cluster, char *file)
 {
-	perror(file);
+	if (file)
+		perror(file);
 	ft_cluster_free(cluster);
 	return (NULL);
-}
-
-void	ft_executer_error(char	**cmd, char *s, int exit_code)
-{
-	write(2, "minishell: ", ft_strlen("minishell: "));
-	write(2, cmd[0], ft_strlen(cmd[0]));
-	write(2, ":", 1);
-	write(2, s, ft_strlen(s));
-	write(2, "\n", 1);
-	exit(exit_code);
 }
