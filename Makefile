@@ -42,12 +42,13 @@ PARSER_SRCS = $(PARSER_DIR)/parser_chars.c $(PARSER_DIR)/parser_clean.c \
               $(PARSER_DIR)/parser_dollar.c $(PARSER_DIR)/parser_dollar_expand.c \
               $(PARSER_DIR)/parser_env.c $(PARSER_DIR)/parser_env_utils.c \
               $(PARSER_DIR)/parser_free.c $(PARSER_DIR)/parser_len.c \
-              $(PARSER_DIR)/parser_main.c $(PARSER_DIR)/parser_nodes.c \
-              $(PARSER_DIR)/parser_pipes.c $(PARSER_DIR)/parser_quotes.c \
-              $(PARSER_DIR)/parser_quotes_utils.c $(PARSER_DIR)/parser_redirect_in.c \
-              $(PARSER_DIR)/parser_redirect_out.c $(PARSER_DIR)/parser_tilde.c \
-              $(PARSER_DIR)/parser_utils.c
-
+              $(PARSER_DIR)/parser_main.c $(PARSER_DIR)/parser_main_utils.c \
+              $(PARSER_DIR)/parser_nodes.c $(PARSER_DIR)/parser_pipes.c \
+              $(PARSER_DIR)/parser_quotes.c $(PARSER_DIR)/parser_quotes_utils.c \
+              $(PARSER_DIR)/parser_redirect_in.c $(PARSER_DIR)/parser_redirect_out.c \
+              $(PARSER_DIR)/parser_tilde.c $(PARSER_DIR)/parser_utils.c \
+              $(PARSER_DIR)/parser_handler.c \
+              
 UTILS_SRCS = $(UTILS_DIR)/get_env.c $(UTILS_DIR)/route.c $(UTILS_DIR)/signal.c
 
 # All source files

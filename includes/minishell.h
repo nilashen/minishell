@@ -142,12 +142,17 @@ void		ft_key_error(char *s, char *cmd, t_state *state);
 int			ft_key_check(char arg, int index);
 void		ft_clean_env(t_env **env);
 
+
 //				parser init functions
 int			ft_parser(t_state *state);
 char		**ft_pipe_split(char *line, char c, t_parser *parser);
 int			ft_count_real_char(char *line, char c, t_parser *parser);
 int			ft_wait_for_input(t_state *state);
 int			ft_exit(char *line, char *msg, t_state *state);
+int			ft_handle_syntax_errors(char *line, t_state *state);
+int			ft_process_parsing(char *line, t_state *state);
+void		ft_parser_handler(t_state *state, char **get_env, char **pars_redirect);
+char		***ft_parser_to_lexer(char **str, t_parser *parser);
 
 //				string clean functions
 void		ft_send_cleaner(t_parser *parser);
