@@ -110,7 +110,9 @@ char	*ft_dup_key(char *key, t_parser *pars, t_env *env)
 	else if (key[0] == '?')
 	{
 		quest = ft_itoa(*(pars->ptr_errno));
-		result = ft_strjoin(quest, key +1);
+		if (ft_strlen(key) == 1)
+			return (quest);
+		result = ft_strjoin(quest, key + 1);
 		free(quest);
 		return (result);
 	}
