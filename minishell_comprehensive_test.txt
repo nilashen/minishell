@@ -1,0 +1,408 @@
+# Minishell Comprehensive Test Cases
+
+## Test Status Legend
+- ✅ **PASS** - Test case works as expected
+- ❌ **FAIL** - Test case fails or produces incorrect output
+- 💥 **CRASH** - Program crashes during test
+- ⚠️ **INCOMPLETE** - Feature not implemented or partially working
+
+---
+
+## 1. COMPILATION AND BASIC SETUP
+
+### Compilation Tests
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `make` compiles without errors | Clean compilation | ✅ |  |
+| Makefile uses `-Wall -Wextra -Werror` | All warning flags present | ✅ |  |
+| Makefile doesn't relink unnecessarily | No relinking on second `make` | ✅ |  |
+
+### Global Variables
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| Count global variables | Only 1 global variable for signals | ✅ |  |
+| Global variable purpose | Should only store signal number | ✅ |  |
+
+---
+
+## 2. BASIC COMMAND EXECUTION
+
+### Simple Commands with Absolute Paths
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `/bin/ls` | Lists current directory contents | ✅ |  |
+| `/bin/pwd` | Prints current working directory | ✅ |  |
+| `/bin/echo hello` | Prints "hello" with newline | ✅ |  |
+| `/usr/bin/whoami` | Prints current username | ✅ |  |
+
+### Empty Commands and Whitespace
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| Empty command (just Enter) | New prompt appears | ✅ |  |
+| Only spaces: `   ` | New prompt appears | ✅ |  |
+| Only tabs: `\t\t\t` | New prompt appears | ❌ | 	// 👇 Tab is being interpreted as a completion request, 
+														not just as a whitespace character.
+														Disable readline's tab completion
+														rl_bind_key('\t', rl_insert); |
+| Mixed spaces/tabs: ` \t \t ` | New prompt appears | ❌ | i am geting this when i am presing tab:
+ 														.git/ exec/ main.c project_structure.txt 
+														.vscode/ executor/ main.o text.txt Makefile expander/ 
+														main_signals.o tokenizing/ builtin/ gnl/ minishell utils/ 
+														builtins/ includes/ minishell_comprehensive_test.txt
+														cleaning/ lexer/ parser/ error/ libraries/ parsing/  |
+
+### Commands with Arguments
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `/bin/ls -l` | Long format listing | ✅ |  |
+| `/bin/ls -la /tmp` | Long listing of /tmp including hidden | ✅ |  |
+| `/bin/echo hello world` | Prints "hello world" | ✅ |  |
+| `/bin/cat /etc/hostname` | Prints hostname | ⚠️ | i got this result after run in. my minishell: /bin/cat /etc/hostname cat: /etc/hostname: No such file or directory
+													📌 Explanation by OS:
+													🐧 Linux (e.g., Ubuntu, Debian):
+													/etc/hostname usually exists and contains the system's hostname (a single line).
+													So cat /etc/hostname works.
+													🍎 macOS:
+													/etc/hostname usually does NOT exist.
+													Hostname is managed differently (scutil --get HostName, or dynamic config).
+													So /bin/cat /etc/hostname will correctly fail with "No such file or directory".  |
+
+---
+
+## 3. BUILT-IN COMMANDS
+
+### ECHO Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `echo` | Prints newline only | ✅|  |
+| `echo hello` | Prints "hello\n" | ✅|  |
+| `echo hello world` | Prints "hello world\n" | ✅ |  |
+| `echo -n` | No output | ✅ |  |
+| `echo -n hello` | Prints "hello" (no newline) | ✅ |  |
+| `echo -n hello world` | Prints "hello world" (no newline) | ✅ |  |
+| `echo "-n hello"` | Prints "-n hello\n" | ✅ |  |
+| `echo -n -n hello` | Prints " -n hello" (no newline) | ✅ |  |
+| `echo ""` | Prints newline only | ✅ |  |
+| `echo '' ` | Prints newline only | ✅ |  |
+
+### EXIT Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `exit` | Shell exits with status 0 | ✅ | Remember to relaunch |
+| `exit 0` | Shell exits with status 0 | ✅ |  |
+| `exit 42` | Shell exits with status 42 | ✅ |  |
+| `exit 255` | Shell exits with status 255 | ✅ |  |
+| `exit 256` | Shell exits with status 0 (256 % 256) | ✅ |
+| `exit -1` | Shell exits with status 255 | ✅ |  |
+| `exit hello` | Error message, exit status 2 | ✅ |  |
+| `exit 42 extra` | Error message, doesn't exit | ✅ |  |
+
+### PWD Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `pwd` | Prints current working directory | ✅ |  |
+| `pwd extra_arg` | Prints current directory (ignores args) | ✅ |  |
+| Test in `/` | Prints "/" | ✅ |  |
+| Test in `/tmp` | Prints "/tmp" | Test in /tmp | Prints /tmp | ❌ (on macOS) or ✅ (on Linux) |
+																On Linux systems, pwd usually prints /tmp 
+																(because /tmp is the actual directory).
+																On macOS, /tmp is a symlink, so printing /private/tmp is correct 
+																unless you specifically want logical path output.
+| Test after `cd` | Prints new directory | ⬜ |  |
+
+### CD Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `cd` | Changes to HOME directory | ⬜ |  |
+| `cd /` | Changes to root directory | ⬜ |  |
+| `cd /tmp` | Changes to /tmp directory | ⬜ |  |
+| `cd .` | Stays in current directory | ⬜ |  |
+| `cd ..` | Goes to parent directory | ⬜ |  |
+| `cd ../..` | Goes up two levels | ⬜ |  |
+| `cd ./subdir` | Changes to subdir if exists | ⬜ |  |
+| `cd nonexistent` | Error: No such file or directory | ⬜ |  |
+| `cd /root` (as non-root) | Error: Permission denied | ⬜ |  |
+| `cd file.txt` | Error: Not a directory | ⬜ |  |
+| `cd arg1 arg2` | Error: too many arguments | ⬜ |  |
+
+### ENV Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `env` | Prints all environment variables | ⬜ |  |
+| `env` after export | Shows exported variables | ⬜ |  |
+| `env` after unset | Doesn't show unset variables | ⬜ |  |
+| `env extra_arg` | Prints environment (ignores args) | ⬜ |  |
+
+### EXPORT Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `export` | Lists exported variables | ⬜ |  |
+| `export VAR=value` | Creates/updates VAR | ⬜ |  |
+| `export VAR` | Exports existing VAR | ⬜ |  |
+| `export NEW_VAR=hello` | Creates NEW_VAR with value "hello" | ⬜ |  |
+| `export PATH=/bin:/usr/bin` | Updates PATH variable | ⬜ |  |
+| `export VAR=` | Creates VAR with empty value | ⬜ |  |
+| `export =value` | Error: invalid identifier | ⬜ |  |
+| `export 123VAR=value` | Error: invalid identifier | ⬜ |  |
+| `export VAR-BAD=value` | Error: invalid identifier | ⬜ |  |
+
+### UNSET Command
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `unset VAR` | Removes VAR from environment | ⬜ |  |
+| `unset PATH` | Removes PATH (breaks command finding) | ⬜ |  |
+| `unset NONEXISTENT` | No error, does nothing | ⬜ |  |
+| `unset` | No error, does nothing | ⬜ |  |
+| `unset VAR1 VAR2` | Removes both variables | ⬜ |  |
+| `unset =` | Error: invalid identifier | ⬜ |  |
+| `unset 123` | Error: invalid identifier | ⬜ |  |
+
+---
+
+## 4. RETURN VALUES AND EXIT STATUS
+
+### Exit Status Testing
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `/bin/ls; echo $?` | Prints "0" | ⬜ |  |
+| `/bin/ls nonexistent; echo $?` | Prints "2" | ⬜ |  |
+| `false; echo $?` | Prints "1" | ⬜ |  |
+| `true; echo $?` | Prints "0" | ⬜ |  |
+| `exit 42; echo $?` (in subshell) | Prints "42" | ⬜ |  |
+| `echo $?; echo $?` | First: previous exit, Second: "0" | ⬜ |  |
+| `expr $? + $?` | Arithmetic with exit status | ⬜ |  |
+
+---
+
+## 5. SIGNAL HANDLING
+
+### Signal Tests
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| Ctrl-C in empty prompt | New line with new prompt | ⬜ |  |
+| Ctrl-\\ in empty prompt | No action | ⬜ |  |
+| Ctrl-D in empty prompt | Exits minishell | ⬜ | Relaunch after! |
+| Ctrl-C after typing text | New line, clear buffer | ⬜ |  |
+| Ctrl-D after typing text | No action | ⬜ |  |
+| Ctrl-\\ after typing text | No action | ⬜ |  |
+| Ctrl-C during `cat` (no args) | Interrupts command, new prompt | ⬜ |  |
+| Ctrl-\\ during `cat` (no args) | Quits command with core dump | ⬜ |  |
+| Ctrl-D during `cat` (no args) | Sends EOF to cat | ⬜ |  |
+| Ctrl-C during `grep something` | Interrupts command, new prompt | ⬜ |  |
+
+---
+
+## 6. QUOTES HANDLING
+
+### Double Quotes
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `echo "hello world"` | Prints "hello world" | ⬜ |  |
+| `echo "hello   world"` | Prints "hello   world" (preserves spaces) | ⬜ |  |
+| `echo ""` | Prints newline only | ⬜ |  |
+| `echo "cat lol.c | cat > lol.c"` | Prints the string literally | ⬜ |  |
+| `echo "$USER"` | Prints value of USER variable | ⬜ |  |
+| `echo "$PWD"` | Prints current directory | ⬜ |  |
+| `echo "$NONEXISTENT"` | Prints empty string | ⬜ |  |
+
+### Single Quotes
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `echo 'hello world'` | Prints "hello world" | ⬜ |  |
+| `echo ''` | Prints newline only | ⬜ |  |
+| `echo '$USER'` | Prints "$USER" (literal) | ⬜ |  |
+| `echo '$PWD'` | Prints "$PWD" (literal) | ⬜ |  |
+| `echo 'hello   world'` | Prints "hello   world" | ⬜ |  |
+| `echo 'cat | grep'` | Prints "cat | grep" (literal) | ⬜ |  |
+| `echo 'hello > file'` | Prints "hello > file" (literal) | ⬜ |  |
+
+---
+
+## 7. ENVIRONMENT VARIABLES
+
+### Variable Expansion
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `echo $USER` | Prints username | ⬜ |  |
+| `echo $PWD` | Prints current directory | ⬜ |  |
+| `echo $HOME` | Prints home directory | ⬜ |  |
+| `echo $PATH` | Prints PATH value | ⬜ |  |
+| `echo $SHELL` | Prints shell path | ⬜ |  |
+| `echo $NONEXISTENT` | Prints empty string | ⬜ |  |
+| `echo $USER$PWD` | Concatenates both values | ⬜ |  |
+| `echo ${USER}` | Prints username | ⬜ | If braces supported |
+| `echo "$USER is in $PWD"` | Expands variables in quotes | ⬜ |  |
+
+### Custom Variables
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `export TEST=hello; echo $TEST` | Prints "hello" | ⬜ |  |
+| `export TEST=; echo $TEST` | Prints empty string | ⬜ |  |
+| `unset TEST; echo $TEST` | Prints empty string | ⬜ |  |
+
+---
+
+## 8. PATH HANDLING
+
+### Relative Paths
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `./minishell` (if executable) | Runs local minishell | ⬜ |  |
+| `../bin/ls` | Runs ls from parent/bin | ⬜ |  |
+| `../../usr/bin/ls` | Complex relative path | ⬜ |  |
+
+### PATH Variable Testing
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `ls` (with PATH set) | Finds and runs ls | ⬜ |  |
+| `echo` (built-in) | Runs built-in echo | ⬜ |  |
+| `unset PATH; ls` | Error: command not found | ⬜ |  |
+| `export PATH=/bin:/usr/bin; ls` | Finds ls in /bin or /usr/bin | ⬜ |  |
+| `export PATH=/usr/bin:/bin; ls` | Finds ls, checks /usr/bin first | ⬜ |  |
+
+---
+
+## 9. REDIRECTIONS
+
+### Input Redirection (<)
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `cat < /etc/hostname` | Prints hostname | ⬜ |  |
+| `wc -l < file.txt` | Counts lines from file | ⬜ |  |
+| `cat < nonexistent` | Error: No such file or directory | ⬜ |  |
+
+### Output Redirection (>)
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `echo hello > output.txt` | Creates file with "hello" | ⬜ |  |
+| `ls > listing.txt` | Redirects ls output to file | ⬜ |  |
+| `echo world > output.txt` | Overwrites existing file | ⬜ |  |
+
+### Append Redirection (>>)
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `echo hello >> output.txt` | Appends to file | ⬜ |  |
+| `echo world >> output.txt` | Appends second line | ⬜ |  |
+
+### Heredoc (<<)
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `cat << EOF` | Reads until "EOF" | ⬜ |  |
+| `wc << END` | Counts input until "END" | ⬜ |  |
+| `cat << ""` | Reads until empty line | ⬜ |  |
+
+### Multiple Redirections
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `cat < input.txt > output.txt` | Copy file via redirection | ⬜ |  |
+| `echo hello > file1 > file2` | Last redirection wins | ⬜ |  |
+
+---
+
+## 10. PIPES
+
+### Basic Pipes
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `ls | wc -l` | Counts files in directory | ⬜ |  |
+| `echo hello | cat` | Prints "hello" | ⬜ |  |
+| `cat /etc/passwd | head -5` | Shows first 5 lines | ⬜ |  |
+
+### Multiple Pipes
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `ls | grep .txt | wc -l` | Counts .txt files | ⬜ |  |
+| `cat file | grep pattern | sort` | Complex pipeline | ⬜ |  |
+| `echo hello | cat | cat | cat` | Multiple cats | ⬜ |  |
+
+### Pipes with Errors
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `ls nonexistent | grep something` | Error to stderr, pipe continues | ⬜ |  |
+| `nonexistent_cmd | cat` | Error for first command | ⬜ |  |
+
+### Pipes with Redirections
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `ls | grep .txt > results.txt` | Pipe then redirect | ⬜ |  |
+| `cat < input.txt | grep pattern` | Redirect then pipe | ⬜ |  |
+
+---
+
+## 11. STRESS TESTS AND EDGE CASES
+
+### Buffer and History Tests
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| Type command, Ctrl-C, Enter | Buffer cleared, no execution | ⬜ |  |
+| Use Up/Down arrows | Navigate command history | ⬜ |  |
+| Repeat previous command | History works correctly | ⬜ |  |
+
+### Error Handling
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `nonexistentcommand` | Error: command not found | ⬜ |  |
+| `dsbksdgbksdghsd` | Error message, no crash | ⬜ |  |
+
+### Complex Commands
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| `cat | cat | ls` | Should behave normally | ⬜ |  |
+| Very long command line | Handles long input | ⬜ |  |
+| Command with many arguments | Handles many args | ⬜ |  |
+
+---
+
+## 12. MEMORY MANAGEMENT
+
+### Memory Tests
+| Test Case | Expected Result | Status | Notes |
+|-----------|----------------|--------|--------|
+| Run multiple commands | No memory leaks in your code | ⬜ |  |
+| Exit and restart | Clean exit, no valgrind errors | ⬜ |  |
+| Long session test | Stable over time | ⬜ |  |
+
+---
+
+## TESTING CHECKLIST
+
+### Before Testing:
+- [ ] Compile with `make`
+- [ ] Check Makefile flags
+- [ ] Prepare test files if needed
+- [ ] Have bash terminal open for comparison
+
+### During Testing:
+- [ ] Test each category systematically
+- [ ] Compare results with bash behavior
+- [ ] Note any crashes or unexpected behavior
+- [ ] Check memory usage if possible
+
+### After Testing:
+- [ ] Count total PASS/FAIL/CRASH/INCOMPLETE
+- [ ] Document any critical issues
+- [ ] Verify all mandatory features work
+
+---
+
+## NOTES SECTION
+
+**Global Variables Found:**
+- Count: ___
+- Purpose: ___
+- Justification: ___
+
+**Critical Issues:**
+- [ ] Compilation problems
+- [ ] Crashes during testing
+- [ ] Major feature missing
+- [ ] Memory leaks in student code
+
+**Overall Assessment:**
+- Mandatory features: ___% working
+- Signal handling: ___% working  
+- Built-ins: ___% working
+- Parsing: ___% working
+- Execution: ___% working
+
+**Final Grade Recommendation:** ___/100
