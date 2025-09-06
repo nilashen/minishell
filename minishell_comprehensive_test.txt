@@ -205,13 +205,23 @@
 ### Exit Status Testing
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `/bin/ls; echo $?` | Prints "0" | ⬜ |  |
-| `/bin/ls nonexistent; echo $?` | Prints "2" | ⬜ |  |
-| `false; echo $?` | Prints "1" | ⬜ |  |
-| `true; echo $?` | Prints "0" | ⬜ |  |
-| `exit 42; echo $?` (in subshell) | Prints "42" | ⬜ |  |
-| `echo $?; echo $?` | First: previous exit, Second: "0" | ⬜ |  |
-| `expr $? + $?` | Arithmetic with exit status | ⬜ |  |
+| `/bin/ls; echo $?` | Prints "0" | ✅|  |
+| `/bin/ls nonexistent; echo $?` | Prints "2" | ✅ | ❗ The subject is explicitly saying:
+														You do not have to support certain shell features, such as:
+														Escaping characters using \
+														Using ; to separate multiple commands on one line | |
+| `false; echo $?` | Prints "1" | ✅ |  |
+| `true; echo $?` | Prints "0" | ✅ |  |
+| `exit 42; echo $?` (in subshell) | Prints "42" | ✅|  |
+| `echo $?; echo $?` | First: previous exit, Second: "0" | ✅|  |
+| `expr $? + $?` | Arithmetic with exit status | ✅ | ❗The first $? is for the last command (echo)
+														The second $? is for expr $? +,
+														which might not make full sense in bash, 
+														but bash still runs it correctly.
+														So in total, unless your shell handles argument expansion exactly like bash,
+														the result could slightly vary.
+														If your shell just expands both $? before running expr,
+														then expr 0 + 0 → 0, and it's acceptable. |
 
 ---
 
@@ -220,16 +230,22 @@
 ### Signal Tests
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| Ctrl-C in empty prompt | New line with new prompt | ⬜ |  |
-| Ctrl-\\ in empty prompt | No action | ⬜ |  |
-| Ctrl-D in empty prompt | Exits minishell | ⬜ | Relaunch after! |
-| Ctrl-C after typing text | New line, clear buffer | ⬜ |  |
-| Ctrl-D after typing text | No action | ⬜ |  |
-| Ctrl-\\ after typing text | No action | ⬜ |  |
-| Ctrl-C during `cat` (no args) | Interrupts command, new prompt | ⬜ |  |
-| Ctrl-\\ during `cat` (no args) | Quits command with core dump | ⬜ |  |
-| Ctrl-D during `cat` (no args) | Sends EOF to cat | ⬜ |  |
-| Ctrl-C during `grep something` | Interrupts command, new prompt | ⬜ |  |
+| Ctrl-C in empty prompt | New line with new prompt | ✅ | 
+| Ctrl-\\ in empty prompt | No action | ✅ |  |
+| Ctrl-D in empty prompt | Exits minishell | ✅ | Relaunch after! |
+| Ctrl-C after typing text | New line, clear buffer | ✅ |  |
+| Ctrl-D after typing text | No action | ✅ |  |
+| Ctrl-\\ after typing text | No action | ✅ |  |
+| Ctrl-C during `cat` (no args) | Interrupts command, new prompt | ✅|  |
+| Ctrl-\\ during `cat` (no args) | Quits command with core dump | ❌ |  ❗Expected Behavior
+																		In bash, if you run:
+																		$ cat
+																		^\
+																		Quit (core dumped)
+																		$ |
+																		it is fixe inside of lexer_issues bracnch
+| Ctrl-D during `cat` (no args) | Sends EOF to cat | ✅ |  |
+| Ctrl-C during `grep something` | Interrupts command, new prompt | ✅|  |
 
 ---
 
@@ -238,24 +254,24 @@
 ### Double Quotes
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `echo "hello world"` | Prints "hello world" | ⬜ |  |
-| `echo "hello   world"` | Prints "hello   world" (preserves spaces) | ⬜ |  |
-| `echo ""` | Prints newline only | ⬜ |  |
-| `echo "cat lol.c | cat > lol.c"` | Prints the string literally | ⬜ |  |
-| `echo "$USER"` | Prints value of USER variable | ⬜ |  |
-| `echo "$PWD"` | Prints current directory | ⬜ |  |
-| `echo "$NONEXISTENT"` | Prints empty string | ⬜ |  |
+| `echo "hello world"` | Prints "hello world" | ✅ |  |
+| `echo "hello   world"` | Prints "hello   world" (preserves spaces) |✅ |  |
+| `echo ""` | Prints newline only |✅ |  |
+| `echo "cat lol.c | cat > lol.c"` | Prints the string literally | ✅ |  |
+| `echo "$USER"` | Prints value of USER variable | ✅ |  |
+| `echo "$PWD"` | Prints current directory | ✅ |  |
+| `echo "$NONEXISTENT"` | Prints empty string | ✅ |  |
 
 ### Single Quotes
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `echo 'hello world'` | Prints "hello world" | ⬜ |  |
-| `echo ''` | Prints newline only | ⬜ |  |
-| `echo '$USER'` | Prints "$USER" (literal) | ⬜ |  |
-| `echo '$PWD'` | Prints "$PWD" (literal) | ⬜ |  |
-| `echo 'hello   world'` | Prints "hello   world" | ⬜ |  |
-| `echo 'cat | grep'` | Prints "cat | grep" (literal) | ⬜ |  |
-| `echo 'hello > file'` | Prints "hello > file" (literal) | ⬜ |  |
+| `echo 'hello world'` | Prints "hello world" | ✅ |  |
+| `echo ''` | Prints newline only | ✅ |  |
+| `echo '$USER'` | Prints "$USER" (literal) | ✅ |  |
+| `echo '$PWD'` | Prints "$PWD" (literal) | ✅ |  |
+| `echo 'hello   world'` | Prints "hello   world" | ✅ |  |
+| `echo 'cat | grep'` | Prints "cat | grep" (literal) | ✅ |  |
+| `echo 'hello > file'` | Prints "hello > file" (literal) |✅ |  |
 
 ---
 
@@ -264,22 +280,22 @@
 ### Variable Expansion
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `echo $USER` | Prints username | ⬜ |  |
-| `echo $PWD` | Prints current directory | ⬜ |  |
-| `echo $HOME` | Prints home directory | ⬜ |  |
-| `echo $PATH` | Prints PATH value | ⬜ |  |
-| `echo $SHELL` | Prints shell path | ⬜ |  |
-| `echo $NONEXISTENT` | Prints empty string | ⬜ |  |
-| `echo $USER$PWD` | Concatenates both values | ⬜ |  |
-| `echo ${USER}` | Prints username | ⬜ | If braces supported |
-| `echo "$USER is in $PWD"` | Expands variables in quotes | ⬜ |  |
+| `echo $USER` | Prints username | ✅ |  |
+| `echo $PWD` | Prints current directory | ✅ |  |
+| `echo $HOME` | Prints home directory | ✅ |  |
+| `echo $PATH` | Prints PATH value | ✅ |  |
+| `echo $SHELL` | Prints shell path | ✅ |  |
+| `echo $NONEXISTENT` | Prints empty string | ✅ |  |
+| `echo $USER$PWD` | Concatenates both values | ✅ |  |
+| `echo ${USER}` | Prints username | ✅ | If braces supported |
+| `echo "$USER is in $PWD"` | Expands variables in quotes | ✅ |  |
 
 ### Custom Variables
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `export TEST=hello; echo $TEST` | Prints "hello" | ⬜ |  |
-| `export TEST=; echo $TEST` | Prints empty string | ⬜ |  |
-| `unset TEST; echo $TEST` | Prints empty string | ⬜ |  |
+| `export TEST=hello; echo $TEST` | Prints "hello" | ✅ |  |
+| `export TEST=; echo $TEST` | Prints empty string | ✅ |  |
+| `unset TEST; echo $TEST` | Prints empty string | ✅ |  |
 
 ---
 
@@ -288,18 +304,23 @@
 ### Relative Paths
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `./minishell` (if executable) | Runs local minishell | ⬜ |  |
-| `../bin/ls` | Runs ls from parent/bin | ⬜ |  |
-| `../../usr/bin/ls` | Complex relative path | ⬜ |  |
+| `./minishell` (if executable) | Runs local minishell | ✅ |  |
+| `../bin/ls` | Runs ls from parent/bin | ✅ |  |
+| `../../usr/bin/ls` | Complex relative path | ✅ | ❗minishell $ ls -l ../../usr/bin/ls
+													ls: ../../usr/bin/ls: No such file or directory
+													minishell $ mkdir -p ../../usr/bin
+													minishell $ cp /bin/ls ../../usr/bin/ls
+													minishell $ chmod +x ../../usr/bin/ls
+													minishell $ ../../usr/bin/ls |
 
 ### PATH Variable Testing
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `ls` (with PATH set) | Finds and runs ls | ⬜ |  |
-| `echo` (built-in) | Runs built-in echo | ⬜ |  |
-| `unset PATH; ls` | Error: command not found | ⬜ |  |
-| `export PATH=/bin:/usr/bin; ls` | Finds ls in /bin or /usr/bin | ⬜ |  |
-| `export PATH=/usr/bin:/bin; ls` | Finds ls, checks /usr/bin first | ⬜ |  |
+| `ls` (with PATH set) | Finds and runs ls | ✅|  |
+| `echo` (built-in) | Runs built-in echo | ✅ |  |
+| `unset PATH; ls` | Error: command not found | ✅ |  |
+| `export PATH=/bin:/usr/bin; ls` | Finds ls in /bin or /usr/bin | ✅ |  |
+| `export PATH=/usr/bin:/bin; ls` | Finds ls, checks /usr/bin first | ✅ |  |
 
 ---
 
@@ -308,35 +329,39 @@
 ### Input Redirection (<)
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `cat < /etc/hostname` | Prints hostname | ⬜ |  |
-| `wc -l < file.txt` | Counts lines from file | ⬜ |  |
-| `cat < nonexistent` | Error: No such file or directory | ⬜ |  |
+| `cat < /etc/hostname` | Prints hostname | ✅ |❗ Conclusion
+												The file /etc/hostname does not exist on your system.
+												Therefore, your minishell’s output:
+												/etc/hostname: No such file or directory
+												is correct and expected.  |
+| `wc -l < file.txt` | Counts lines from file | ✅  |  |
+| `cat < nonexistent` | Error: No such file or directory | ✅ |  |
 
 ### Output Redirection (>)
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `echo hello > output.txt` | Creates file with "hello" | ⬜ |  |
-| `ls > listing.txt` | Redirects ls output to file | ⬜ |  |
-| `echo world > output.txt` | Overwrites existing file | ⬜ |  |
+| `echo hello > output.txt` | Creates file with "hello" | ✅ |  |
+| `ls > listing.txt` | Redirects ls output to file |✅ |  |
+| `echo world > output.txt` | Overwrites existing file | ✅ |  |
 
 ### Append Redirection (>>)
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `echo hello >> output.txt` | Appends to file | ⬜ |  |
-| `echo world >> output.txt` | Appends second line | ⬜ |  |
+| `echo hello >> output.txt` | Appends to file | ✅ |  |
+| `echo world >> output.txt` | Appends second line | ✅ |  |
 
 ### Heredoc (<<)
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `cat << EOF` | Reads until "EOF" | ⬜ |  |
-| `wc << END` | Counts input until "END" | ⬜ |  |
-| `cat << ""` | Reads until empty line | ⬜ |  |
+| `cat << EOF` | Reads until "EOF" | ✅ |  |
+| `wc << END` | Counts input until "END" | ✅ |  |
+| `cat << ""` | Reads until empty line | ✅ |  |
 
 ### Multiple Redirections
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `cat < input.txt > output.txt` | Copy file via redirection | ⬜ |  |
-| `echo hello > file1 > file2` | Last redirection wins | ⬜ |  |
+| `cat < input.txt > output.txt` | Copy file via redirection | ✅ |  |
+| `echo hello > file1 > file2` | Last redirection wins | ✅ |  |
 
 ---
 
@@ -345,29 +370,36 @@
 ### Basic Pipes
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `ls | wc -l` | Counts files in directory | ⬜ |  |
-| `echo hello | cat` | Prints "hello" | ⬜ |  |
-| `cat /etc/passwd | head -5` | Shows first 5 lines | ⬜ |  |
-
+| `ls | wc -l` | Counts files in directory | ✅  |  |
+| `echo hello | cat` | Prints "hello" | ✅ |  |
+| `cat /etc/passwd | head -5` | Shows first 5 lines | ✅ |❗To test the pipe with head on macOS🍎,
+														where head -5 can cause errors, do this instead:
+														cat /etc/passwd | head -n 5 |
 ### Multiple Pipes
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `ls | grep .txt | wc -l` | Counts .txt files | ⬜ |  |
-| `cat file | grep pattern | sort` | Complex pipeline | ⬜ |  |
-| `echo hello | cat | cat | cat` | Multiple cats | ⬜ |  |
+| `ls | grep .txt | wc -l` | Counts .txt files | ✅ |  |
+| `cat file | grep pattern | sort` | Complex pipeline | ✅ | minishell $
+															printf "apple\nbanana\napricot\nblueberry\navocado" > file
+															minishell $ cat file | grep 'ap' | sort
+															apple
+															apricot|
+| `echo hello | cat | cat | cat` | Multiple cats |✅ |  |
 
 ### Pipes with Errors
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `ls nonexistent | grep something` | Error to stderr, pipe continues | ⬜ |  |
-| `nonexistent_cmd | cat` | Error for first command | ⬜ |  |
+| `ls nonexistent | grep something` | Error to stderr, pipe continues | ✅ |  |
+| `nonexistent_cmd | cat` | Error for first command | ✅ |  |
 
 ### Pipes with Redirections
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `ls | grep .txt > results.txt` | Pipe then redirect | ⬜ |  |
-| `cat < input.txt | grep pattern` | Redirect then pipe | ⬜ |  |
-
+| `ls | grep .txt > results.txt` | Pipe then redirect | ✅ |  |
+| `cat < input.txt | grep pattern` | Redirect then pipe | ✅ | ❗echo -e "line 1\npattern line\nanother line\npattern again" > input.txt 
+																cat < input.txt | grep pattern
+																pattern line
+																pattern again
 ---
 
 ## 11. STRESS TESTS AND EDGE CASES
@@ -375,22 +407,39 @@
 ### Buffer and History Tests
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| Type command, Ctrl-C, Enter | Buffer cleared, no execution | ⬜ |  |
-| Use Up/Down arrows | Navigate command history | ⬜ |  |
-| Repeat previous command | History works correctly | ⬜ |  |
+| Type command, Ctrl-C, Enter | Buffer cleared, no execution | ✅ |  |
+| Use Up/Down arrows | Navigate command history | ✅  |  |
+| Repeat previous command | History works correctly | ✅  |  |
 
 ### Error Handling
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `nonexistentcommand` | Error: command not found | ⬜ |  |
-| `dsbksdgbksdghsd` | Error message, no crash | ⬜ |  |
+| `nonexistentcommand` | Error: command not found | ✅  |  |
+| `dsbksdgbksdghsd` | Error message, no crash | ✅ |  |
 
 ### Complex Commands
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `cat | cat | ls` | Should behave normally | ⬜ |  |
-| Very long command line | Handles long input | ⬜ |  |
-| Command with many arguments | Handles many args | ⬜ |  |
+| `cat | cat | ls` | Should behave normally | ✅ |  
+												🔄 How it works in a real shell:
+												The first cat reads from stdin (the terminal).
+												It passes input to the second cat.
+												The second cat passes it to ls.
+												BUT — ls doesn’t read from input, it's at the end of the pipeline .
+												it should execute only after the previous commands finish.
+												So: the pipeline should hang waiting for stdin, unless you:
+												Type Ctrl-D (EOF)
+												Or Ctrl-C to cancel it|
+												❗In the pipeline cat | cat | ls, here’s what’s going on:
+													First cat reads from stdin (your keyboard)
+													Second cat passes it along
+													ls doesn't read from stdin — it just executes immediately
+													So:
+													The cat | cat part reads input and does nothing with it (passes along)
+													ls runs independently and outputs immediately — it doesn't wait for cats to finish
+													The pipeline doesn’t actually force any order unless there’s data dependency
+| Very long command line | Handles long input | ✅ |  |
+| Command with many arguments | Handles many args | ✅ |  |
 
 ---
 
