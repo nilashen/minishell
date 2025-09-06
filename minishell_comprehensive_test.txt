@@ -57,7 +57,7 @@
 | `/bin/ls -l` | Long format listing | ✅ |  |
 | `/bin/ls -la /tmp` | Long listing of /tmp including hidden | ✅ |  |
 | `/bin/echo hello world` | Prints "hello world" | ✅ |  |
-| `/bin/cat /etc/hostname` | Prints hostname | ⚠️ | i got this result after run in. my minishell: /bin/cat /etc/hostname cat: /etc/hostname: No such file or directory
+| `/bin/cat /etc/hostname` | Prints hostname | ⚠️ | I got this result after run in. my minishell: /bin/cat /etc/hostname cat: /etc/hostname: No such file or directory
 													📌 Explanation by OS:
 													🐧 Linux (e.g., Ubuntu, Debian):
 													/etc/hostname usually exists and contains the system's hostname (a single line).
@@ -108,22 +108,59 @@
 																(because /tmp is the actual directory).
 																On macOS, /tmp is a symlink, so printing /private/tmp is correct 
 																unless you specifically want logical path output.
-| Test after `cd` | Prints new directory | ⬜ |  |
+| Test after `cd` | Prints new directory | ❌ | Expected:
+												minishell $ cd /tmp
+												/tmp
+												minishell $ 
+												How to Fix It:
+												In your cd implementation, after calling chdir(path), 
+												add a getcwd() and print the result. |
 
 ### CD Command
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `cd` | Changes to HOME directory | ⬜ |  |
-| `cd /` | Changes to root directory | ⬜ |  |
-| `cd /tmp` | Changes to /tmp directory | ⬜ |  |
-| `cd .` | Stays in current directory | ⬜ |  |
-| `cd ..` | Goes to parent directory | ⬜ |  |
-| `cd ../..` | Goes up two levels | ⬜ |  |
-| `cd ./subdir` | Changes to subdir if exists | ⬜ |  |
-| `cd nonexistent` | Error: No such file or directory | ⬜ |  |
-| `cd /root` (as non-root) | Error: Permission denied | ⬜ |  |
-| `cd file.txt` | Error: Not a directory | ⬜ |  |
-| `cd arg1 arg2` | Error: too many arguments | ⬜ |  |
+| `cd` | Changes to HOME directory | ✅ |  |
+| `cd /` | Changes to root directory | ✅ |  |
+| `cd /tmp` | Changes to /tmp directory | ✅ |  |
+| `cd .` | Stays in current directory | ✅ |  |
+| `cd ..` | Goes to parent directory | ✅ |  |
+| `cd ../..` | Goes up two levels | ✅ |  |
+| `cd ./subdir` | Changes to subdir if exists | ✅ |  |
+| `cd nonexistent` | Error: No such file or directory | ✅ | ❗result is and not Error:
+																cd: nonexist: No such file or directory |
+| `cd /root` (as non-root) | Error: Permission denied | ✅ |❗ On 🐧 Linux:
+															/root exists but is not accessible to non-root users 
+															→ you get Permission denied.
+															On 🍎 macOS:
+															 if /root does not exist, then:
+															cd: /root: No such file or directory
+																is the correct error. |
+| `cd file.txt` | Error: Not a directory | ❌ | minishell $ touch text.txt
+												minishell $ cd text.txt
+												cd: text.txt: Undefined error: 0
+												❗You’re probably printing the error using:
+												perror("cd");
+												🛠️ How to Fix This in Your Code (C):
+												Make sure you check errno right after chdir() fails
+												if (errno == ENOTDIR)
+        										fprintf(stderr, "cd: %s: Not a directory\n", path);|
+| `cd arg1 arg2` | Error: too many arguments | ❌ | minishell $ cd arg1 arg2
+													cd: arg1: No such file or directory
+													What’s going wrong:
+													Your shell isn't checking the number of arguments
+													before trying to execute the cd.
+													It should check if more than one argument is given 
+													and then print the error without trying to chdir(). 
+													🛠️How to fix:
+													Make sure your cd builtin checks arguments count first:
+													int argc = 0;
+													while (argv[argc])
+														argc++;
+
+													if (argc > 2) {
+														fprintf(stderr, "cd: too many arguments\n");
+														return 1;  // or handle error properly
+													}|
 
 ### ENV Command
 | Test Case | Expected Result | Status | Notes |
