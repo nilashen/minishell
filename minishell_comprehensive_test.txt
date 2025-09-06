@@ -165,34 +165,38 @@
 ### ENV Command
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `env` | Prints all environment variables | ⬜ |  |
-| `env` after export | Shows exported variables | ⬜ |  |
-| `env` after unset | Doesn't show unset variables | ⬜ |  |
-| `env extra_arg` | Prints environment (ignores args) | ⬜ |  |
+| `env` | Prints all environment variables | ✅  |  |
+| `env` after export | Shows exported variables | ✅  |  |
+| `env` after unset | Doesn't show unset variables | ✅ |  |
+| `env extra_arg` | Prints environment (ignores args) | ✅ |  |
 
 ### EXPORT Command
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `export` | Lists exported variables | ⬜ |  |
-| `export VAR=value` | Creates/updates VAR | ⬜ |  |
-| `export VAR` | Exports existing VAR | ⬜ |  |
-| `export NEW_VAR=hello` | Creates NEW_VAR with value "hello" | ⬜ |  |
-| `export PATH=/bin:/usr/bin` | Updates PATH variable | ⬜ |  |
-| `export VAR=` | Creates VAR with empty value | ⬜ |  |
-| `export =value` | Error: invalid identifier | ⬜ |  |
-| `export 123VAR=value` | Error: invalid identifier | ⬜ |  |
-| `export VAR-BAD=value` | Error: invalid identifier | ⬜ |  |
+| `export` | Lists exported variables | ✅ |  |
+| `export VAR=value` | Creates/updates VAR | ✅ |  |
+| `export VAR` | Exports existing VAR | ✅ |  |
+| `export NEW_VAR=hello` | Creates NEW_VAR with value "hello" | ✅ |  |
+| `export PATH=/bin:/usr/bin` | Updates PATH variable | ✅ |  |
+| `export VAR=` | Creates VAR with empty value | ✅ |  |
+| `export =value` | Error: invalid identifier | ✅ |  |
+| `export 123VAR=value` | Error: invalid identifier | ✅ |  |
+| `export VAR-BAD=value` | Error: invalid identifier | ✅ |  |
 
 ### UNSET Command
 | Test Case | Expected Result | Status | Notes |
 |-----------|----------------|--------|--------|
-| `unset VAR` | Removes VAR from environment | ⬜ |  |
-| `unset PATH` | Removes PATH (breaks command finding) | ⬜ |  |
-| `unset NONEXISTENT` | No error, does nothing | ⬜ |  |
-| `unset` | No error, does nothing | ⬜ |  |
-| `unset VAR1 VAR2` | Removes both variables | ⬜ |  |
-| `unset =` | Error: invalid identifier | ⬜ |  |
-| `unset 123` | Error: invalid identifier | ⬜ |  |
+| `unset VAR` | Removes VAR from environment | ✅ |  |
+| `unset PATH` | Removes PATH (breaks command finding) | ✅ | ❗minishell $ unset PATH
+															minishell $ pwd
+															/Users/nashena  🔎 works because pwd is likely a builtin
+															minishell $ ls
+															minishell: ls: command not found   🔎 external command fails (as expected) |
+| `unset NONEXISTENT` | No error, does nothing | ✅ |  |
+| `unset` | No error, does nothing | ✅ |  |
+| `unset VAR1 VAR2` | Removes both variables | ✅ |  |
+| `unset =` | Error: invalid identifier | ✅ |  |
+| `unset 123` | Error: invalid identifier | ✅ |  |
 
 ---
 
