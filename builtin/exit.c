@@ -54,6 +54,13 @@ static void	ft_exit_with_error(t_state *state, char *arg, char *msg, int code)
 	ft_putstr_fd(arg, 2);
 	ft_putstr_fd(msg, 2);
 	ft_full_free(state, code);
+	// if (isatty(fileno(stdin)))
+	// 	ft_putstr_fd("exit\n", 2);
+	
+	// ft_putstr_fd("minishell: exit: ", 2);
+	// ft_putstr_fd(arg, 2);
+	// ft_putstr_fd(msg, 2);
+	// ft_full_free(state, code);
 }
 
 void	ft_built_exit_cmd(t_state *state, t_cluster *cluster)

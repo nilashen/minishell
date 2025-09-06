@@ -23,7 +23,8 @@ UTILS_DIR = utils
 
 BUILTIN_SRCS = $(BUILTIN_DIR)/cd.c $(BUILTIN_DIR)/echo.c $(BUILTIN_DIR)/env.c \
                $(BUILTIN_DIR)/error.c $(BUILTIN_DIR)/exit.c $(BUILTIN_DIR)/export.c \
-               $(BUILTIN_DIR)/pwd.c $(BUILTIN_DIR)/unset.c $(BUILTIN_DIR)/export_utils.c
+               $(BUILTIN_DIR)/pwd.c $(BUILTIN_DIR)/unset.c $(BUILTIN_DIR)/export_utils.c \
+               $(BUILTIN_DIR)/cd_utils.c
 
 ERROR_SRCS = $(ERROR_DIR)/error_utils.c $(ERROR_DIR)/error_utils_2.c $(ERROR_DIR)/error_utils_3.c
 

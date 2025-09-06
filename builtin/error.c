@@ -16,6 +16,21 @@ void	ft_cd_error(char *dir, t_state *state)
 	perror(dir);
 }
 
+void	ft_cd_chdir_error(char *dir, t_state **state)
+{
+	write(2, "cd: ", 4);
+	write(2, dir, ft_strlen(dir));
+	if (errno == ENOTDIR)
+		write(2, ": Not a directory\n", 18);
+	else if (errno == EACCES)
+		write(2, ": Permission denied\n", 20);
+	else if (errno == ENOENT)
+		write(2, ": No such file or directory\n", 28);
+	else
+		write(2, ": Operation not permitted\n", 26);
+	(*state)->error = 1;
+}
+
 void	ft_key_error(char *s, char *cmd, t_state *state)
 {
 	if (ft_strncmp(cmd, "export", ft_strlen(cmd)) == 0)

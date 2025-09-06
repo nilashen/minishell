@@ -37,7 +37,7 @@ int	ft_wait_for_input(t_state *state)
 		return (2);
 	while (state->line[i])
 	{
-		if ((state->line[i] != 10) && (state->line[i] != 32))
+		if ((state->line[i] != 10) && (state->line[i] != 32) && (state->line[i] != 9))
 			return (1);
 		i++;
 	}

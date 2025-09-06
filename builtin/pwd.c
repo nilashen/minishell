@@ -2,7 +2,7 @@
 
 void	ft_pwd(t_cluster *cluster, t_state *state)
 {
-	char	pwd[1024];
+	char	pwd[4096];
 	int		fd;
 
 	fd = cluster->files->fd_output;
@@ -13,5 +13,8 @@ void	ft_pwd(t_cluster *cluster, t_state *state)
 		state->error = 0;
 	}
 	else
-		perror("PWD");
+	{
+		perror("pwd");
+		state->error = 1;
+	}
 }

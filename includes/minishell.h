@@ -131,6 +131,7 @@ void		ft_pwd(t_cluster *cluster, t_state *state);
 void		ft_cd(t_state **state);
 void		ft_notdefine_dir(char *s, t_state *state);
 void		ft_cd_error(char *dir, t_state *state);
+void		ft_cd_chdir_error(char *dir, t_state **state);
 int			ft_strcmp(char *s1, char *s2);
 void		bubble_sort(t_env *exp, int (*cmp)(char *, char *));
 void		ft_print_exp(t_state **state, t_cluster *cluster);
@@ -141,6 +142,11 @@ void		ft_print_export_vars(t_state **state, t_cluster *cluster);
 void		ft_key_error(char *s, char *cmd, t_state *state);
 int			ft_key_check(char arg, int index);
 void		ft_clean_env(t_env **env);
+void		ft_cd_dir_check(t_state **state, char *dir);
+void		ft_cd_up_dir(t_state **state);
+void		ft_cd_select_dir(t_state **state, char *type);
+void		ft_cd_execute_cmd(t_state **state, t_cluster *tmp);
+void		ft_cd_finalize(t_state **state, char *pwd);
 
 
 //				parser init functions
