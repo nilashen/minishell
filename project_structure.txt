@@ -88,10 +88,9 @@
 │   ├── parser_tilde.c
 │   └── parser_utils.c
 ├── project_structure.txt
-├── README.md
 └── [01;34mutils[0m
     ├── get_env.c
     ├── route.c
     └── signal.c
 
-10 directories, 85 files
+10 directories, 84 files
