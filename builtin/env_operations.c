@@ -63,10 +63,13 @@ void	ft_add_env(t_state **state, char *arg)
 	while (arg[i] && arg[i] != '=' )
 	{
 		if (ft_key_check(arg[i], i) == 0)
+		{
+			(*state)->error = 1; 
 			return ;
+		}
 		i++;
 	}
-	env_addback(&tmp_env, new_env(ft_substr(arg, 0, i),
+	ft_env_addback(&tmp_env, new_env(ft_substr(arg, 0, i),
 			ft_substr(arg, i + 1, ft_strlen(arg) - i - 1)));
 	(*state)->env = tmp_env;
 	(*state)->error = 0;
@@ -75,15 +78,21 @@ void	ft_add_env(t_state **state, char *arg)
 void	ft_export_status(t_state **state, t_cluster *cluster)
 {
 	int			i;
+	int			has_error;
 
 	i = 1;
+	has_error = 0;
 	if (cluster->cmd[i] == NULL)
 		return (ft_print_exp(state, cluster));
+	(*state)->error = 0;
 	while (cluster->cmd[i])
-	{
-		if (ft_strchr(cluster->cmd[i], '=') != NULL)
-			ft_add_env(state, cluster->cmd[i]);
-		ft_add_exp(state, cluster->cmd[i]);
-		i++;
+    {
+        if (ft_strchr(cluster->cmd[i], '=') != NULL)
+            ft_add_env(state, cluster->cmd[i]);
+        ft_add_exp(state, cluster->cmd[i]);
+        if ((*state)->error != 0)
+			has_error = 1;
+        i++;
 	}
+	(*state)->error = has_error;
 }

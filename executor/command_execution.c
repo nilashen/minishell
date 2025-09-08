@@ -64,19 +64,23 @@ static void	ft_open_pipes(t_state *state)
 
 static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 {
-	char	*cmd_path;
+    char	*cmd_path;
 
-	ft_dup_init(state, cluster, i, check);
-	if (state->cmd_count > 1 && check > 0)
-	{
-		ft_dispatch_builtin(state, cluster);
-		free(state->line);
-		exit(state->error);
-	}
-	cmd_path = ft_cmd_get(state, cluster);
-	if (cmd_path == NULL && cluster->cmd[0] != NULL)
-		ft_execute_pipeline_error(cluster->cmd, "command not found", 127);
-	exit(127);
+    // Reset signal handling for child processes
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+    
+    ft_dup_init(state, cluster, i, check);
+    if (state->cmd_count > 1 && check > 0)
+    {
+        ft_dispatch_builtin(state, cluster);
+        free(state->line);
+        exit(state->error);
+    }
+    cmd_path = ft_cmd_get(state, cluster);
+    if (cmd_path == NULL && cluster->cmd[0] != NULL)
+        ft_execute_pipeline_error(cluster->cmd, "command not found", 127);
+    exit(127);
 }
 
 void	ft_execute_pipeline(t_state *state, int i)
@@ -95,7 +99,7 @@ void	ft_execute_pipeline(t_state *state, int i)
 				ft_dispatch_builtin(state, tmp);
 			else
 			{
-				g_sig_status = 1;
+				g_sig_status = IN_CAT;
 				tmp->pid = fork();
 				if (tmp->pid == 0)
 					ft_execve(state, tmp, i, check);

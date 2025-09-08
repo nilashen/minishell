@@ -16,7 +16,7 @@ static char	*ft_find_env(char *str, int n, t_parser *parser, t_env *env)
 	else if (parser->key[0] == '$' && ft_strchr(parser->key + 1, '$'))
 		dest = ft_refind_env(parser, env);
 	else if (parser->key[0] != '$' && ft_strchr(parser->key + 1, '$'))
-		dest = ft_united_dolar(parser, env);
+		dest = ft_united_dollar(parser, env);
 	else if (!ft_check_after_key(parser->key))
 		dest = ft_dup_key(parser->key, parser, env);
 	else
@@ -34,16 +34,16 @@ static char	*ft_env_handler(char *str, t_env *env, t_parser *parser)
 	int		dolrlen;
 
 	str_len = (parser->len_str[1] - parser->len_str[0] + 1);
-	dolrlen = (parser->len_dolar[1] - parser->len_dolar[0] + 1);
+	dolrlen = (parser->len_dollar[1] - parser->len_dollar[0] + 1);
 	if (parser->len_str[0] == -1)
 		tmp_str = ft_strdup("");
 	else
 		tmp_str = ft_substr(str, parser->len_str[0], str_len);
-	if (parser->len_dolar[0] == -1)
+	if (parser->len_dollar[0] == -1)
 		env_str = ft_strdup("");
 	else
-		env_str = ft_find_env(str + parser->len_dolar[0], dolrlen, parser, env);
-	if (parser->dolar_is_first)
+		env_str = ft_find_env(str + parser->len_dollar[0], dolrlen, parser, env);
+	if (parser->dollar_is_first)
 		dest = ft_strjoin(env_str, tmp_str);
 	else
 		dest = ft_strjoin(tmp_str, env_str);
@@ -52,25 +52,33 @@ static char	*ft_env_handler(char *str, t_env *env, t_parser *parser)
 	return (dest);
 }
 
-char	*ft_dolar_handler(char *str, t_node *dolar, t_parser *prs, t_env *env)
+char *ft_dollar_handler(char *str, t_node *dollar, t_parser *prs, t_env *env)
 {
-	t_node	*new_node;
+    t_node *new_node;
 
-	dolar = NULL;
-	prs->d = 0;
-	while (str[prs->d])
-	{
-		if (str[prs->d] == '$' && ft_is_dollar(str, prs->d, prs))
-			prs->dolar_is_first = 1;
-		else
-			prs->dolar_is_first = 0;
-		ft_pars_str(str, prs);
-		new_node = ft_new_node(ft_env_handler(str, env, prs));
-		if (!new_node)
-			return (NULL);
-		ft_node_add_back(&dolar, new_node);
-	}
-	return (ft_node_resizer(dolar));
+    if (!str || !prs)
+        return (NULL);
+    dollar = NULL;
+    prs->d = 0;
+    while (str[prs->d])
+    {
+        if (str[prs->d] == '$' && ft_is_dollar(str, prs->d, prs))
+            prs->dollar_is_first = 1;
+        else
+            prs->dollar_is_first = 0;
+        ft_pars_str(str, prs);   
+        char *env_result = ft_env_handler(str, env, prs);
+        if (!env_result)
+            env_result = ft_strdup("");         
+        new_node = ft_new_node(env_result);
+        if (!new_node)
+        {
+            free(env_result);
+            return (NULL);
+        }
+        ft_node_add_back(&dollar, new_node);
+    }
+    return (ft_node_resizer(dollar));
 }
 
 char	*ft_join_key(char *key, int index, t_env *env)

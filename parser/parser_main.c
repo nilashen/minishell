@@ -69,7 +69,7 @@ char	**ft_put_env(char **str, t_state *state)
 		count_dolr = ft_count_dollar(str[i], state->pars);
 		env = state->env;
 		if (count_dolr)
-			dest[i] = ft_dolar_handler(str[i], state->dolar, state->pars, env);
+			dest[i] = ft_dollar_handler(str[i], state->dollar, state->pars, env);
 		else
 			dest[i] = ft_strdup(str[i]);
 	}
@@ -83,11 +83,11 @@ void	ft_parser_handler(t_state *state, char **get_env,
 	state->pars->clean_argv = ft_put_tilde(get_env, state, state->pars);
 	ft_free_double_str(get_env);
 	state->cmd_count = ft_double_str_len(state->pars->clean_argv);
-	state->clean_thrd_argv = ft_parser_to_lexer(state->pars->clean_argv,
+	state->third_arg_clean = ft_parser_to_lexer(state->pars->clean_argv,
 			state->pars);
 	ft_free_double_str(state->pars->clean_argv);
 	ft_cluster(state);
-	ft_free_thrd_str(state->clean_thrd_argv);
+	ft_free_third_str(state->third_arg_clean);
 	ft_execute_pipeline(state, 0);
 }
 

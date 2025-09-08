@@ -33,13 +33,21 @@ char	*ft_prepare_input_line(t_state *state)
 	return (line);
 }
 
-int	ft_validate_syntax(char *line, t_state *state)
+int ft_validate_syntax(char *line, t_state *state)
 {
-	if (ft_quote_check(line, (int)ft_strlen(line), state->pars))
-		return (ft_exit(line, "Error: Open quotation mark !", state));
-	if (ft_pipe_check(line, state->pars))
-		return (ft_exit(line, "Error: Failure to use pipe ! ", state));
-	return (0);
+    if (ft_quote_check(line, (int)ft_strlen(line), state->pars))
+    {
+        ft_putendl_fd("Error: Open quotation mark !", STDERR_FILENO);
+        state->error = 258;
+        return (1);
+    }
+    if (ft_pipe_check(line, state->pars))
+    {
+        ft_putendl_fd("Error: Failure to use pipe !", STDERR_FILENO);
+        state->error = 258;
+        return (1);
+    }
+    return (0);
 }
 
 int	ft_split_and_clean(char *line, t_state *state, char ***split_str)
@@ -70,7 +78,7 @@ int	ft_process_parsed_data(char *line, t_state *state)
 		return (ft_exit_redirect(line, "Error: Redirect syntax error !",
 				state));
 	free(line);
-	pars_redirect = ft_redirect_parser(state->pars, state->dolar);
+	pars_redirect = ft_redirect_parser(state->pars, state->dollar);
 	ft_free_double_str(state->pars->cleaned);
 	get_env = ft_put_env(pars_redirect, state);
 	ft_parser_handler(state, get_env, pars_redirect);

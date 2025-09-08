@@ -53,20 +53,20 @@ char	*ft_new_strjoin(char *s1, char *s2)
 	return (dst);
 }
 
-char	*ft_node_resizer(t_node *dolar)
+char	*ft_node_resizer(t_node *dollar)
 {
 	char	*dest;
 	t_node	*tmp;
 	t_node	*tmp2;
 
-	tmp = dolar;
+	tmp = dollar;
 	dest = ft_strdup("");
 	while (tmp)
 	{
 		dest = ft_new_strjoin(dest, tmp->str);
 		tmp = tmp->next;
 	}
-	tmp = dolar;
+	tmp = dollar;
 	while (tmp)
 	{
 		tmp2 = tmp;

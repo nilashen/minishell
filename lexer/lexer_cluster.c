@@ -77,16 +77,16 @@ static t_cluster	*ft_new_cluster_node(char	**arg)
 void	ft_cluster(t_state *state)
 {
 	t_cluster	*new;
-	char		***thrd_arg;
+	char		***third_arg;
 	t_cluster	*tmp_node;
 	int			i;
 
 	i = 0;
 	tmp_node = NULL;
-	thrd_arg = state->clean_thrd_argv;
-	while (thrd_arg[i])
+	third_arg = state->third_arg_clean;
+	while (third_arg[i])
 	{
-		new = ft_new_cluster_node(thrd_arg[i]);
+		new = ft_new_cluster_node(third_arg[i]);
 		if (new == NULL)
 			state->error = 1;
 		ft_cluster_addback(&tmp_node, new);

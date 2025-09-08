@@ -21,24 +21,21 @@ void	ft_wait(t_state *state, int check)
 {
 	t_cluster	*tmp;
 	int			status;
-	int			exit_code;
+	int			last_exit_code;
 
+	(void)check;
+	last_exit_code = 0;
 	tmp = state->cluster;
-	exit_code = 0;
 	while (tmp)
 	{
 		if (tmp->pid > 0)
 		{
-			waitpid(tmp->pid, &status, 0);
-			if (WIFEXITED(status))
-				exit_code = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				exit_code = 128 + WTERMSIG(status);
-			if (check <= 0 || state->cmd_count > 1)
-				state->error = exit_code;
+			if (waitpid(tmp->pid, &status, 0) > 0)
+				last_exit_code = ft_get_exit_code(status);
 		}
 		tmp = tmp->next;
 	}
+	state->error = last_exit_code;
 	ft_int_free(state);
 }
 

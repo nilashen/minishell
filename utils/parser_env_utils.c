@@ -2,12 +2,12 @@
 
 void	ft_pars_str(char *s, t_parser *prs)
 {
-	if (prs->dolar_is_first)
+	if (prs->dollar_is_first)
 	{
-		prs->len_dolar[0] = prs->d +1;
+		prs->len_dollar[0] = prs->d +1;
 		while (s[prs->d] != '\0' && s[prs->d] != ' ')
 			prs->d++;
-		prs->len_dolar[1] = prs->d -1;
+		prs->len_dollar[1] = prs->d -1;
 		if (s[prs->d] != ' ' && prs->d >= (int)(ft_strlen(s) - 1))
 		{
 			prs->len_str[0] = -1;
@@ -44,13 +44,13 @@ void	ft_pars_str_helper(char *s, t_parser *prs)
 	prs->len_str[1] = prs->d -1;
 	if (s[prs->d] != ' ' && prs->d >= (int)(ft_strlen(s) -1))
 	{
-		prs->len_dolar[0] = -1;
+		prs->len_dollar[0] = -1;
 		return ;
 	}
-	prs->len_dolar[0] = prs->d +1;
+	prs->len_dollar[0] = prs->d +1;
 	while (s[prs->d] != '\0' && s[prs->d] != ' ')
 		prs->d++;
-	prs->len_dolar[1] = prs->d -1;
+	prs->len_dollar[1] = prs->d -1;
 }
 
 int	ft_check_after_key(char *key)

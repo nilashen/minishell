@@ -2,31 +2,44 @@
 
 static void	ft_signal_handler(int sig)
 {
-    const char newline[] = "\n";
-    
-    (void)sig;
     if (g_sig_status == IN_CAT)
     {
-        write(STDOUT_FILENO, newline, 1);
-        rl_on_new_line();
+        if (sig == SIGINT)
+        {
+            write(STDOUT_FILENO, "\n", 1);
+            rl_on_new_line();
+            // Don't reset g_sig_status here, let the parent process handle it
+        }
     }
-    else if (g_sig_status == IN_HERADOC)
+    else if (g_sig_status == IN_HEREDOC)
     {
-        write(STDOUT_FILENO, newline, 1);
-        exit(1);
+        if (sig == SIGINT)
+        {
+            write(STDOUT_FILENO, "\n", 1);
+            exit(130); // Standard bash exit code for SIGINT
+        }
     }
-    else if (g_sig_status == 0)
+    else if (g_sig_status == 0)  // Interactive mode
     {
-        write(STDOUT_FILENO, newline, 1);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
+        if (sig == SIGINT)
+        {
+            write(STDOUT_FILENO, "\n", 1);
+            rl_on_new_line();
+            rl_replace_line("", 0);
+            rl_redisplay();
+        }
     }
-    g_sig_status = 0;
 }
 
 void	ft_init_signals(void)
 {
-	signal(SIGINT, ft_signal_handler);
-	signal(SIGQUIT, SIG_IGN);
+    signal(SIGINT, ft_signal_handler);
+    signal(SIGQUIT, SIG_IGN);
 }
+
+// void	ft_init_signals(void)
+// {
+// 	signal(SIGINT, ft_signal_handler);
+// 	signal(SIGTSTP, SIG_IGN);
+//     signal(SIGQUIT, SIG_IGN); 
+// }

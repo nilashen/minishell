@@ -12,7 +12,7 @@ void	ft_free_double_str(char **str)
 	free(str);
 }
 
-void	ft_free_thrd_str(char ***str)
+void	ft_free_third_str(char ***str)
 {
 	int	i;
 	int	j;

@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	env_addback(t_env **lst, t_env *new)
+void	ft_env_addback(t_env **lst, t_env *new)
 {
 	t_env	*tmp;
 
@@ -28,7 +28,7 @@ t_env	*new_env(char *key, char *value)
 	return (new);
 }
 
-t_env	*get_env(t_state *data, char **env)
+t_env	*ft_get_env(t_state *data, char **env)
 {
 	int		i;
 	int		x;
@@ -42,14 +42,14 @@ t_env	*get_env(t_state *data, char **env)
 		x = 0;
 		while (env[i][x] && env[i][x] != '=')
 			x++;
-		env_addback(&tmp, new_env(ft_substr(env[i], 0, x),
+		ft_env_addback(&tmp, new_env(ft_substr(env[i], 0, x),
 				ft_substr(env[i], x + 1, ft_strlen(env[i]) - x - 1)));
 		i++;
 	}
 	return (tmp);
 }
 
-void	ft_sep_path(t_state *state)
+void	ft_separate_path(t_state *state)
 {
 	t_env	*tmp;
 
@@ -65,4 +65,20 @@ void	ft_sep_path(t_state *state)
 		tmp = tmp->next;
 	}
 	state->sep_path = ft_split("", ':');
+}
+
+int	ft_get_exit_code(int status)
+{
+	int	sig;
+
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGPIPE)
+			return (0);
+		return (128 + sig);
+	}
+	return (0);
 }

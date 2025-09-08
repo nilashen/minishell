@@ -16,8 +16,8 @@ static void	ft_init_program(int argc, char **argv, char **envp, t_state **state)
 		ft_error_message("Error: Malloc problem !");
 	g_sig_status = 0;
 	ft_init_signals();
-	(*state)->env = get_env(*state, envp);
-	(*state)->exp = get_env(*state, envp);
+	(*state)->env = ft_get_env(*state, envp);
+	(*state)->exp = ft_get_env(*state, envp);
 	(*state)->envp = envp;
 	(*state)->error = 0;
 	(*state)->cluster = NULL;
@@ -42,7 +42,7 @@ static char	*ft_get_input_line(void)
 static void	ft_setup_loop_iteration(t_state *state)
 {
 	g_sig_status = 0;
-	ft_sep_path(state);
+	ft_separate_path(state);
 	state->pars->ptr_errno = &(state->error);
 	state->line = ft_get_input_line();
 }
@@ -57,10 +57,12 @@ static int	ft_handle_command_processing(t_state *state, int *final_exit_code)
 	if (parser_result)
 	{
 		*final_exit_code = state->error;
-		return (1);
+		ft_free_double_str(state->sep_path);
+        free(state->line);
+        ft_all_cluster_free(state);
+        return (1);
 	}
-	if (state->error != 0)
-		*final_exit_code = state->error;
+	*final_exit_code = state->error;
 	ft_free_double_str(state->sep_path);
 	free(state->line);
 	ft_all_cluster_free(state);
@@ -79,8 +81,7 @@ int	main(int argc, char **argv, char **envp)
 		ft_setup_loop_iteration(state);
 		if (!state->line)
 			break;
-		if (ft_handle_command_processing(state, &final_exit_code))
-			break;
+		ft_handle_command_processing(state, &final_exit_code);
 	}
 	ft_full_free(state, final_exit_code);
 	return (final_exit_code);

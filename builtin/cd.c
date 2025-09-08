@@ -88,7 +88,6 @@ void	ft_builtin_cd(t_state **state)
 {
 	t_cluster	*tmp;
 	char		pwd[1024];
-	char		*oldpwd;
 
 	if (getcwd(pwd, sizeof(pwd)) == NULL)
 	{
@@ -97,17 +96,8 @@ void	ft_builtin_cd(t_state **state)
 		return ;
 	}
 	tmp = (*state)->cluster;
-	ft_execute_cd_command(state, tmp);	
+	(*state)->error = 1;
+	ft_execute_cd_command(state, tmp);
 	if ((*state)->error == 0)
-	{
-		oldpwd = ft_strjoin("OLDPWD=", pwd);
-		if (oldpwd)
-		{
-			ft_add_exp(state, oldpwd);
-			ft_add_env(state, oldpwd);
-			free(oldpwd);
-		}
-		else
-			(*state)->error = 1;
-	}
+		ft_update_pwd_env(state, pwd);
 }

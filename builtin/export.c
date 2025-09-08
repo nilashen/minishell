@@ -69,31 +69,28 @@ void	ft_print_exp(t_state **state, t_cluster *cluster)
 	(*state)->error = 0;
 }
 
+static void	ft_add_export_node(t_env **exp, char *arg, int key_len)
+{
+	if (ft_strchr(arg, '=') != NULL)
+		ft_env_addback(exp, new_env(ft_substr(arg, 0, key_len),
+				ft_substr(arg, key_len + 1, ft_strlen(arg) - key_len - 1)));
+	else
+		ft_env_addback(exp, new_env(ft_substr(arg, 0, key_len), NULL));
+	ft_sort_env_list(*exp, ft_strcmp);
+}
+
 void	ft_add_exp(t_state **state, char *arg)
 {
-	t_env		*tmp_exp;
-	int			i;
+	t_env	*tmp_exp;
+	int		key_len;
 
-	i = 0;
 	tmp_exp = (*state)->exp;
 	ft_del_node(&tmp_exp, arg);
-	if (ft_key_check(arg[0], 0) == 0)
-		return (ft_key_error(arg, "export", *state));
-	while (arg[i] && arg[i] != '=' )
-	{
-		if (ft_key_check(arg[i], i) == 0)
-		{
-			ft_key_error(arg, "export", *state);
-			return ;
-		}
-		i++;
-	}
-	if (ft_strchr(arg, '=') != NULL)
-		env_addback(&tmp_exp, new_env(ft_substr(arg, 0, i),
-				ft_substr(arg, i + 1, ft_strlen(arg) - i - 1)));
-	else
-		env_addback(&tmp_exp, new_env(ft_substr(arg, 0, i), NULL));
-	ft_sort_env_list(tmp_exp, ft_strcmp);
+	key_len = ft_validate_key(arg, *state);
+	if (key_len == 0)
+		return ;
+	ft_add_export_node(&tmp_exp, arg, key_len);
 	(*state)->exp = tmp_exp;
 	(*state)->error = 0;
 }
+

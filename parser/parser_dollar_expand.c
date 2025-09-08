@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static int	ft_mini_dolar_counter(char *str, int ***chck_dolr, int ***chck_dq)
+static int	ft_mini_dollar_counter(char *str, int ***chck_dolr, int ***chck_dq)
 {
 	int		i;
 	int		count_dolr;
@@ -33,7 +33,7 @@ static int	ft_init_united(int **chk_dq, int **chk_dolr, char **tmp,
 	int	check_sub;
 
 	len = ft_strlen(prs->key);
-	count = ft_mini_dolar_counter(prs->key, &chk_dolr, &chk_dq);
+	count = ft_mini_dollar_counter(prs->key, &chk_dolr, &chk_dq);
 	
 	ft_handle_double_quote_check(chk_dq, tmp, prs, len);
 	
@@ -86,7 +86,7 @@ static void	ft_united_handler(int *chk_dq, int *chk_dlr,
 		prs->united_env[i] = ft_new_strjoin(prs->united_env[i], "$");
 }
 
-char	*ft_united_dolar(t_parser *parser, t_env *env)
+char	*ft_united_dollar(t_parser *parser, t_env *env)
 {
 	char	*dest;
 	int		chck_dolr;

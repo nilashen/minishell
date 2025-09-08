@@ -47,7 +47,7 @@ static int	ft_heredoc(t_files *node)
 	status = 0;
 	if (pid == 0)
 	{
-		g_sig_status = IN_HERADOC;
+		g_sig_status = IN_HEREDOC;
 		while (1)
 		{
 			line = readline(">");

@@ -3,9 +3,9 @@
 int	ft_count_dollar(char *str, t_parser *parser)
 {
 	int	i;
-	int	count_dolar;
+	int	count_dollar;
 
-	count_dolar = 0;
+	count_dollar = 0;
 	if (ft_strchr(str, '$') != NULL && ft_strlen(str) > 1)
 	{
 		i = 0;
@@ -14,12 +14,12 @@ int	ft_count_dollar(char *str, t_parser *parser)
 			while (str[i] && str[i] != '$')
 				i++;
 			if (str[i] == '$' && ft_is_dollar(str, i, parser))
-				count_dolar++;
+				count_dollar++;
 			while (str[i] && str[i] != ' ')
 				i++;
 		}
 	}
-	return (count_dolar);
+	return (count_dollar);
 }
 
 int	ft_is_dollar(char *str, int i, t_parser *parser)
@@ -61,7 +61,7 @@ static char	*ft_put_refind(t_parser *parser, t_env *env, char *tmp)
 		|| parser->key[0] == '@' || parser->key[0] == '*')
 		united = ft_strdup(parser->key + 1);
 	else if (ft_strchr(parser->key, '$'))
-		united = ft_united_dolar(parser, env);
+		united = ft_united_dollar(parser, env);
 	else if (!ft_check_after_key(parser->key))
 		united = ft_dup_key(parser->key, parser, env);
 	else
