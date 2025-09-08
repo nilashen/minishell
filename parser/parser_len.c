@@ -39,6 +39,6 @@ int	ft_exit_redirect(char *line, char *msg, t_state *state)
 	state->error = 258;
 	free(line);
 	ft_free_double_str(state->pars->cleaned);
-	ft_error_mesage(msg);
+	ft_error_message(msg);
 	return (0);
 }

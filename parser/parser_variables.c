@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int	ft_count_dolar(char *str, t_parser *parser)
+int	ft_count_dollar(char *str, t_parser *parser)
 {
 	int	i;
 	int	count_dolar;
@@ -13,7 +13,7 @@ int	ft_count_dolar(char *str, t_parser *parser)
 		{
 			while (str[i] && str[i] != '$')
 				i++;
-			if (str[i] == '$' && ft_isdolr(str, i, parser))
+			if (str[i] == '$' && ft_is_dollar(str, i, parser))
 				count_dolar++;
 			while (str[i] && str[i] != ' ')
 				i++;
@@ -22,7 +22,7 @@ int	ft_count_dolar(char *str, t_parser *parser)
 	return (count_dolar);
 }
 
-int	ft_isdolr(char *str, int i, t_parser *parser)
+int	ft_is_dollar(char *str, int i, t_parser *parser)
 {
 	char	*check_str;
 	int		dval;

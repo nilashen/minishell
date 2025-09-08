@@ -16,13 +16,13 @@ static void	ft_dir_check(t_state **state, char *dir)
 					(*state)->error = 0;
 			}
 			else
-				ft_cd_error(dir,*state);
+				ft_builtin_cd_error(dir,*state);
 		}
 		else
-			ft_cd_error(dir,*state);
+			ft_builtin_cd_error(dir,*state);
 	}
 	else
-		ft_cd_error(dir,*state);
+		ft_builtin_cd_error(dir,*state);
 }
 
 static void	ft_select_dir(t_state **state, char *type)
@@ -72,7 +72,7 @@ static void	ft_up_dir(t_state **state)
 	free(dir);
 }
 
-void	ft_cd(t_state **state)
+void	ft_builtin_cd(t_state **state)
 {
 	t_cluster	*tmp;
 	char		pwd[1024];

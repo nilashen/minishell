@@ -123,14 +123,14 @@ extern int 	g_sig_status;
 //			built in functions
 void		env_addback(t_env **lst, t_env *new);
 void		ft_add_env(t_state **state, char *arg);
-void		ft_echo(t_cluster *cluster, t_state *state);
-void		ft_del_env(t_state **state, t_cluster *cluster);
-void		ft_pwd(t_cluster *cluster, t_state *state);
-void		ft_cd(t_state **state);
+void		ft_builtin_echo(t_cluster *cluster, t_state *state);
+void		ft_unset_variable(t_state **state, t_cluster *cluster);
+void		ft_builtin_pwd(t_cluster *cluster, t_state *state);
+void		ft_builtin_cd(t_state **state);
 void		ft_notdefine_dir(char *s, t_state *state);
-void		ft_cd_error(char *dir, t_state *state);
+void		ft_builtin_cd_error(char *dir, t_state *state);
 int			ft_strcmp(char *s1, char *s2);
-void		bubble_sort(t_env *exp, int (*cmp)(char *, char *));
+void		ft_sort_env_list(t_env *exp, int (*cmp)(char *, char *));
 void		ft_print_exp(t_state **state, t_cluster *cluster);
 void		ft_add_exp(t_state **state, char *arg);
 void		ft_del_node(t_env **list, char *key);
@@ -148,7 +148,7 @@ int			ft_exit(char *line, char *msg, t_state *state);
 
 //				string clean functions
 void		ft_send_cleaner(t_parser *parser);
-int			ft_error_mesage(char *str);
+int			ft_error_message(char *str);
 void		ft_free_double_str(char **str);
 int			ft_double_str_len(char **str);
 void		ft_free_double_str(char **str);
@@ -167,8 +167,8 @@ char		*ft_cut_dquote(char *str, int len, t_parser *pars);
 char		*ft_cut_squote(char *str, int len, t_parser *pars);
 
 //							Put env functions
-int			ft_count_dolar(char *str, t_parser *parser);
-int			ft_isdolr(char *str, int index, t_parser *pars);
+int			ft_count_dollar(char *str, t_parser *parser);
+int			ft_is_dollar(char *str, int index, t_parser *pars);
 int			ft_check_is_in(char *str, int index, t_parser *parser);
 char		*ft_dolar_handler(char *str, t_node *dolar, t_parser *prs,
 				t_env *env);
@@ -216,20 +216,20 @@ int			ft_open_output(char *file);
 int			ft_open_append(char *file);
 t_cluster	*ft_file_open_error(t_cluster *cluster, char *file);
 void		ft_print_env(t_state *state, t_cluster *cluster);
-void		ft_route(t_state *state, t_cluster *tmp);
-int			ft_check_built(t_cluster *cluster);
+void		ft_dispatch_builtin(t_state *state, t_cluster *tmp);
+int			ft_is_builtin_command(t_cluster *cluster);
 
 //					executer functions 
 void		ft_close_pipe(t_state *state, int check);
 void		ft_dup_init(t_state *state, t_cluster *cluster, int i, int check);
-void		ft_executer_error(char	**cmd, char *s, int exit_code);
-void		ft_executer(t_state *state, int i);
+void		ft_execute_pipeline_error(char	**cmd, char *s, int exit_code);
+void		ft_execute_pipeline(t_state *state, int i);
 void		ft_wait(t_state *state, int check);
 void		ft_heredoc_check(t_files *node, char **arg);
 char		**ft_find_cmd(char **arg, int len);
 char		*get_next_line(int fd);
 void		ft_all_cluster_free(t_state *state);
-void		ft_built_exit_cmd(t_state *state, t_cluster *cluster);
+void		ft_builtin_exit(t_state *state, t_cluster *cluster);
 void		ft_int_free(t_state *state);
 void		ft_tilda_handler(t_state *state);
 void		ft_cluster_free(t_cluster *cluster);

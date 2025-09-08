@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	ft_exex_file_check(t_state *state, t_cluster *cluster)
+static void	ft_exec_file_check(t_state *state, t_cluster *cluster)
 {
 	struct stat	file_info;
 
@@ -14,17 +14,17 @@ static void	ft_exex_file_check(t_state *state, t_cluster *cluster)
 				exit(0);
 			}
 			else
-				ft_executer_error(cluster->cmd, "permission denied", 126);
+				ft_execute_pipeline_error(cluster->cmd, "permission denied", 126);
 		}
 		else
 		{
 			if (ft_strcmp(state->cluster->cmd[0], ".") == 0)
-				ft_executer_error(cluster->cmd, "filename argument required",
+				ft_execute_pipeline_error(cluster->cmd, "filename argument required",
 					2);
 			else if (ft_strcmp(state->cluster->cmd[0], "..") == 0)
-				ft_executer_error(cluster->cmd, "commond not found", 127);
+				ft_execute_pipeline_error(cluster->cmd, "commond not found", 127);
 			else
-				ft_executer_error(cluster->cmd, "is a directory", 126);
+				ft_execute_pipeline_error(cluster->cmd, "is a directory", 126);
 		}
 	}
 }
@@ -39,7 +39,7 @@ static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
 	if (cluster->cmd[0] == NULL)
 		return (NULL);
 	if (cluster->cmd[0][0] == '/' || cluster->cmd[0][0] == '.')
-		ft_exex_file_check(state, cluster);
+		ft_exec_file_check(state, cluster);
 	while (state->sep_path[i])
 	{
 		tmp = ft_strjoin(state->sep_path[i], "/");
@@ -76,19 +76,17 @@ static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 	ft_dup_init(state, cluster, i, check);
 	if (state->cmd_count > 1 && check > 0)
 	{
-		ft_route(state, cluster);
+		ft_dispatch_builtin(state, cluster);
 		free(state->line);
 		exit(0);
 	}
 	cmd_path = ft_cmd_get(state, cluster);
 	if (cmd_path == NULL && cluster->cmd[0] != NULL)
-	{
-		ft_executer_error(cluster->cmd, "command not found", 127);
-	}
+		ft_execute_pipeline_error(cluster->cmd, "command not found", 127);
 	exit(0);
 }
 
-void	ft_executer(t_state *state, int i)
+void	ft_execute_pipeline(t_state *state, int i)
 {
 	t_cluster	*tmp;
 	int			check;
@@ -97,11 +95,11 @@ void	ft_executer(t_state *state, int i)
 	tmp = state->cluster;
 	while (tmp)
 	{
-		check = ft_check_built(tmp);
+		check = ft_is_builtin_command(tmp);
 		if (tmp->cmd)
 		{
 			if (check > 0 && state->cmd_count == 1)
-				ft_route(state, tmp);
+				ft_dispatch_builtin(state, tmp);
 			else
 			{
 				g_sig_status = 1;

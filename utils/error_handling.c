@@ -23,7 +23,7 @@ t_cluster	*ft_file_open_error(t_cluster *cluster, char *file)
 	return (NULL);
 }
 
-void	ft_executer_error(char	**cmd, char *s, int exit_code)
+void	ft_execute_pipeline_error(char	**cmd, char *s, int exit_code)
 {
 	write(2, "minishell: ", ft_strlen("minishell: "));
 	write(2, cmd[0], ft_strlen(cmd[0]));

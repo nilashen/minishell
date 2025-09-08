@@ -9,7 +9,7 @@ void	ft_notdefine_dir(char *s, t_state *state)
 	write(2, "not set\n", ft_strlen("not set\n"));
 }
 
-void	ft_cd_error(char *dir, t_state *state)
+void	ft_builtin_cd_error(char *dir, t_state *state)
 {
 	state->error = 1;
 	write(2, "cd: ", ft_strlen("cd: "));

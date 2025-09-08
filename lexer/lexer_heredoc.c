@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	ft_heradoc_helper(char *line, t_files *node)
+static void	ft_heredoc_helper(char *line, t_files *node)
 {
 	if (line == NULL)
 	{
@@ -50,7 +50,7 @@ static int	ft_heredoc(t_files *node)
 		while (1)
 		{
 			line = readline(">");
-			ft_heradoc_helper(line, node);
+			ft_heredoc_helper(line, node);
 		}
 	}
 	else

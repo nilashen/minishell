@@ -26,7 +26,7 @@ char	*ft_line_read(int fd, char *buf, char *reserv)
 	return (reserv);
 }
 
-char	*ft_polish(char *line)
+char	*ft_trim_newline(char *line)
 {
 	char	*cleaned;
 	int		i;
@@ -68,6 +68,6 @@ char	*get_next_line(int fd)
 		reserv[fd] = NULL;
 		return (NULL);
 	}
-	reserv[fd] = ft_polish(line);
+	reserv[fd] = ft_trim_newline(line);
 	return (line);
 }

@@ -1,15 +1,8 @@
 #include "../includes/minishell.h"
 
-int	ft_error_mesage(char *str)
+int	ft_error_message(char *str)
 {
-	char	*red_color;
-	char	*reset_color;
-
-	red_color = "\033[1;31m";
-	reset_color = "\033[0m";
-	write(2, red_color, ft_strlen(red_color));
 	write(2, str, ft_strlen(str));
-	write(2, reset_color, ft_strlen(reset_color));
 	write(2, "\n", 1);
 	return (1);
 }
@@ -54,6 +47,6 @@ int	ft_exit(char *line, char *msg, t_state *state)
 {
 	state->error = 258;
 	free(line);
-	ft_error_mesage(msg);
+	ft_error_message(msg);
 	return (0);
 }

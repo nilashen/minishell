@@ -42,7 +42,7 @@ static int	ft_del_if(t_state **state, t_cluster *cluster, int i, int j)
 	return (0);
 }
 
-void	ft_del_env(t_state **state, t_cluster *cluster)
+void	ft_unset_variable(t_state **state, t_cluster *cluster)
 {
 	t_cluster	*tmp;
 	int			i;

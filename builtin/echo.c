@@ -23,7 +23,7 @@ static int	ft_flag_check(char **cmd)
 	return (i);
 }
 
-void	ft_echo(t_cluster *cluster, t_state *state)
+void	ft_builtin_echo(t_cluster *cluster, t_state *state)
 {
 	char	**cmd;
 	int		i;

@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	ft_transaction(t_env **ptr1, int *swapped)
+static void	ft_swap_env_nodes(t_env **ptr1, int *swapped)
 {
 	char	*temp;
 	char	*tmpvalue;
@@ -14,7 +14,7 @@ static void	ft_transaction(t_env **ptr1, int *swapped)
 	*swapped = 0;
 }
 
-void	bubble_sort(t_env *exp, int (*cmp)(char *, char *))
+void	ft_sort_env_list(t_env *exp, int (*cmp)(char *, char *))
 {
 	int		swapped;
 	t_env	*ptr1;
@@ -32,7 +32,7 @@ void	bubble_sort(t_env *exp, int (*cmp)(char *, char *))
 		{
 			if ((*cmp)(ptr1->key, ptr1->next->key) > 0)
 			{
-				ft_transaction(&ptr1, &swapped);
+				ft_swap_env_nodes(&ptr1, &swapped);
 			}
 			ptr1 = ptr1->next;
 		}
@@ -93,7 +93,7 @@ void	ft_add_exp(t_state **state, char *arg)
 				ft_substr(arg, i + 1, ft_strlen(arg) - i - 1)));
 	else
 		env_addback(&tmp_exp, new_env(ft_substr(arg, 0, i), NULL));
-	bubble_sort(tmp_exp, ft_strcmp);
+	ft_sort_env_list(tmp_exp, ft_strcmp);
 	(*state)->exp = tmp_exp;
 	(*state)->error = 0;
 }

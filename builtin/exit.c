@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	ft_built_exit_cmd(t_state *state, t_cluster *cluster)
+void	ft_builtin_exit(t_state *state, t_cluster *cluster)
 {
 	int	i;
 

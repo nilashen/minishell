@@ -64,7 +64,7 @@ static char	**ft_put_env(char **str, t_state *state)
 	i = -1;
 	while (str[++i])
 	{
-		count_dolr = ft_count_dolar(str[i], state->pars);
+		count_dolr = ft_count_dollar(str[i], state->pars);
 		env = state->env;
 		if (count_dolr)
 			dest[i] = ft_dolar_handler(str[i], state->dolar, state->pars, env);
@@ -86,7 +86,7 @@ static void	ft_parser_handler(t_state *state, char **get_env,
 	ft_free_double_str(state->pars->clean_argv);
 	ft_cluster(state);
 	ft_free_thrd_str(state->clean_thrd_argv);
-	ft_executer(state, 0);
+	ft_execute_pipeline(state, 0);
 }
 
 int	ft_parser(t_state *state)

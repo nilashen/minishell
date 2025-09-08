@@ -2,20 +2,14 @@
 ├── [01;34mbuiltin[0m
 │   ├── cd.c
 │   ├── echo.c
-│   ├── env.c
+│   ├── env_operations.c
 │   ├── error.c
 │   ├── exit.c
 │   ├── export.c
 │   ├── pwd.c
 │   └── unset.c
-├── [01;34merror[0m
-│   ├── error_utils_2.c
-│   └── error_utils.c
 ├── [01;34mexecutor[0m
-│   ├── exec.c
-│   └── exec_utils.c
-├── [01;34mgnl[0m
-│   └── get_next_line.c
+│   └── command_execution.c
 ├── [01;34mincludes[0m
 │   ├── [01;34mlibft[0m
 │   │   ├── ft_atoi.c
@@ -72,25 +66,30 @@
 ├── [01;34mparser[0m
 │   ├── parser_chars.c
 │   ├── parser_clean.c
-│   ├── parser_dollar.c
 │   ├── parser_dollar_expand.c
 │   ├── parser_env.c
-│   ├── parser_env_utils.c
 │   ├── parser_free.c
+│   ├── parser_input_redirect.c
 │   ├── parser_len.c
 │   ├── parser_main.c
 │   ├── parser_nodes.c
+│   ├── parser_output_redirect.c
 │   ├── parser_pipes.c
 │   ├── parser_quotes.c
-│   ├── parser_quotes_utils.c
-│   ├── parser_redirect_in.c
-│   ├── parser_redirect_out.c
 │   ├── parser_tilde.c
-│   └── parser_utils.c
+│   └── parser_variables.c
 ├── project_structure.txt
+├── text.txt
 └── [01;34mutils[0m
+    ├── error_handling.c
     ├── get_env.c
-    ├── route.c
+    ├── get_next_line.c
+    ├── memory_cleanup.c
+    ├── parser_env_utils.c
+    ├── parser_quotes_utils.c
+    ├── parser_utils.c
+    ├── process_management.c
+    ├── route_builtin_dispatcher.c
     └── signal.c
 
-10 directories, 84 files
+8 directories, 85 files
