@@ -24,25 +24,64 @@ static void	ft_init_program(int argc, char **argv, char **envp, t_state **state)
 	(*state)->fd = NULL;
 }
 
+static char	*ft_get_input_line(void)
+{
+	char	*line;
+	char	*result;
+
+	if (isatty(fileno(stdin)))
+		return (readline("minishell $ "));
+	line = get_next_line(fileno(stdin));
+	if (!line)
+		return (NULL);
+	result = ft_strtrim(line, "\n");
+	free(line);
+	return (result);
+}
+
+static void	ft_setup_loop_iteration(t_state *state)
+{
+	g_sig_status = 0;
+	ft_sep_path(state);
+	state->pars->ptr_errno = &(state->error);
+	state->line = ft_get_input_line();
+}
+
+static int	ft_handle_command_processing(t_state *state, int *final_exit_code)
+{
+	int	parser_result;
+
+	if (state->line && ft_wait_for_input(state) == 1)
+		add_history(state->line);
+	parser_result = ft_parser(state);
+	if (parser_result)
+	{
+		*final_exit_code = state->error;
+		return (1);
+	}
+	if (state->error != 0)
+		*final_exit_code = state->error;
+	ft_free_double_str(state->sep_path);
+	free(state->line);
+	ft_all_cluster_free(state);
+	return (0);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_state	*state;
+	int		final_exit_code;
 
 	ft_init_program(argc, argv, envp, &state);
+	final_exit_code = 0;
 	while (1)
 	{
-		g_sig_status = 0;
-		ft_sep_path(state);
-		state->pars->ptr_errno = &(state->error);
-		state->line = readline("minishell $ ");
-		if (state->line && ft_wait_for_input(state) == 1)
-			add_history(state->line);
-		if (ft_parser(state))
-			break ;
-		ft_free_double_str(state->sep_path);
-		free(state->line);
-		ft_all_cluster_free(state);
+		ft_setup_loop_iteration(state);
+		if (!state->line)
+			break;
+		if (ft_handle_command_processing(state, &final_exit_code))
+			break;
 	}
-	ft_full_free(state, 0);
-	return (0);
+	ft_full_free(state, final_exit_code);
+	return (final_exit_code);
 }

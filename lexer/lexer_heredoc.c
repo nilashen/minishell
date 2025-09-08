@@ -10,6 +10,7 @@ static void	ft_heredoc_helper(char *line, t_files *node)
 	if (ft_strcmp(line, node->input) == 0)
 	{
 		free(line);
+		close(node->fd_heredoc[1]); 
 		exit(0);
 	}
 	write(node->fd_heredoc[1], line, ft_strlen(line));

@@ -72,14 +72,8 @@ static void	ft_up_dir(t_state **state)
 	free(dir);
 }
 
-void	ft_builtin_cd(t_state **state)
+static void	ft_execute_cd_command(t_state **state, t_cluster *tmp)
 {
-	t_cluster	*tmp;
-	char		pwd[1024];
-	char		*oldpwd;
-
-	getcwd(pwd, sizeof(pwd));
-	tmp = (*state)->cluster;
 	if (tmp->cmd == NULL || tmp->cmd[1] == NULL)
 		ft_select_dir(state, "HOME");
 	else if (ft_strcmp(tmp->cmd[1], "-") == 0)
@@ -88,11 +82,32 @@ void	ft_builtin_cd(t_state **state)
 		ft_up_dir(state);
 	else if (ft_strcmp(tmp->cmd[1], ".") != 0)
 		ft_dir_check(state, tmp->cmd[1]);
+}
+
+void	ft_builtin_cd(t_state **state)
+{
+	t_cluster	*tmp;
+	char		pwd[1024];
+	char		*oldpwd;
+
+	if (getcwd(pwd, sizeof(pwd)) == NULL)
+	{
+		perror("getcwd");
+		(*state)->error = 1;
+		return ;
+	}
+	tmp = (*state)->cluster;
+	ft_execute_cd_command(state, tmp);	
 	if ((*state)->error == 0)
 	{
 		oldpwd = ft_strjoin("OLDPWD=", pwd);
-		ft_add_exp(state, oldpwd);
-		ft_add_env(state, oldpwd);
-		free(oldpwd);
+		if (oldpwd)
+		{
+			ft_add_exp(state, oldpwd);
+			ft_add_env(state, oldpwd);
+			free(oldpwd);
+		}
+		else
+			(*state)->error = 1;
 	}
 }

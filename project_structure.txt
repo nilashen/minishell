@@ -85,11 +85,14 @@
     ├── get_env.c
     ├── get_next_line.c
     ├── memory_cleanup.c
+    ├── parser_cleanup_util.c
+    ├── parser_dollar_expand_utils.c
     ├── parser_env_utils.c
     ├── parser_quotes_utils.c
+    ├── parser_utils2.c
     ├── parser_utils.c
     ├── process_management.c
     ├── route_builtin_dispatcher.c
     └── signal.c
 
-8 directories, 85 files
+8 directories, 88 files

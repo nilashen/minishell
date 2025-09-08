@@ -20,14 +20,23 @@ void	ft_int_free(t_state *state)
 void	ft_wait(t_state *state, int check)
 {
 	t_cluster	*tmp;
-	int			result;
+	int			status;
+	int			exit_code;
 
 	tmp = state->cluster;
+	exit_code = 0;
 	while (tmp)
 	{
-		waitpid(tmp->pid, &result, 0);
-		if (!(check > 0))
-			state->error = result >> 8;
+		if (tmp->pid > 0)
+		{
+			waitpid(tmp->pid, &status, 0);
+			if (WIFEXITED(status))
+				exit_code = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				exit_code = 128 + WTERMSIG(status);
+			if (check <= 0 || state->cmd_count > 1)
+				state->error = exit_code;
+		}
 		tmp = tmp->next;
 	}
 	ft_int_free(state);

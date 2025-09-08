@@ -31,23 +31,16 @@ static void	ft_exec_file_check(t_state *state, t_cluster *cluster)
 
 static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
 {
-	char	*tmp;
-	char	*command;
-	int		i;
+	int	i;
 
 	i = 0;
 	if (cluster->cmd[0] == NULL)
 		return (NULL);
 	if (cluster->cmd[0][0] == '/' || cluster->cmd[0][0] == '.')
 		ft_exec_file_check(state, cluster);
-	while (state->sep_path[i])
+	while (state->sep_path && state->sep_path[i])
 	{
-		tmp = ft_strjoin(state->sep_path[i], "/");
-		command = ft_strjoin(tmp, cluster->cmd[0]);
-		free(tmp);
-		if (access(command, X_OK) == 0)
-			execve(command, cluster->cmd, state->envp);
-		free (command);
+		ft_try_path_command(state, cluster, i);
 		i++;
 	}
 	return (NULL);
@@ -78,12 +71,12 @@ static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 	{
 		ft_dispatch_builtin(state, cluster);
 		free(state->line);
-		exit(0);
+		exit(state->error);
 	}
 	cmd_path = ft_cmd_get(state, cluster);
 	if (cmd_path == NULL && cluster->cmd[0] != NULL)
 		ft_execute_pipeline_error(cluster->cmd, "command not found", 127);
-	exit(0);
+	exit(127);
 }
 
 void	ft_execute_pipeline(t_state *state, int i)

@@ -38,15 +38,15 @@ int	ft_full_free(t_state *state, int status)
 	free(state->pars);
 	free(state);
 	if (status != 255 && status != 1)
-		ft_putstr_fd("exit\n", 2);
+		// ft_putstr_fd("exit\n", 2);
 	state = NULL;
 	exit(status);
 }
 
 int	ft_exit(char *line, char *msg, t_state *state)
 {
-	state->error = 258;
+	state->error = 2;
 	free(line);
 	ft_error_message(msg);
-	return (0);
+	return (1);
 }

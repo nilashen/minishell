@@ -193,12 +193,27 @@ void		ft_free_substr(char **sub, char **sub2, char **sub3,
 
 // 				Parser utils functions
 t_node		*ft_finish_redirect(char *str, int i, t_parser *pars);
+int			ft_clean_str(char **str, t_parser *pars);
+char		**ft_put_env(char **str, t_state *state);
+void		ft_parser_handler(t_state *state, char **get_env, char **pars_redirect);
 char		**ft_node_to_double(t_node **list, int i, int list_size);
 char		**ft_redirect_parser(t_parser *pars, t_node *list);
 void		ft_node_add_back(t_node **lst, t_node *new_node);
 char		*ft_new_strjoin(char *s1, char *s2);
 char		*ft_node_resizer(t_node *dolar);
 t_node		*ft_new_node(char *content);
+int			ft_allocate_united_env(t_parser *prs, int count);
+int			ft_split_key_by_quotes(t_parser *prs, int len);
+void		ft_handle_double_quote_check(int **chk_dq, char **tmp,
+				t_parser *prs, int len);
+int			ft_validate_parser_input(t_state *state);
+char		*ft_prepare_input_line(t_state *state);
+int			ft_validate_syntax(char *line, t_state *state);
+int			ft_split_and_clean(char *line, t_state *state, char ***split_str);
+int			ft_process_parsed_data(char *line, t_state *state);
+void		ft_cleanup_arrays(t_parser *pars, int last_index);
+int			ft_init_arrays(t_parser *pars, int len);
+int			ft_try_path_command(t_state *state, t_cluster *cluster, int i);
 
 //					3D string functions
 char		*ft_clean_first_last_quote(char *str);
