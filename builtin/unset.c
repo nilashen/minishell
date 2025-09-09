@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 14:45:00 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 14:45:33 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	ft_validate_unset_key(char *key, t_state *state)
@@ -9,15 +21,11 @@ static int	ft_validate_unset_key(char *key, t_state *state)
 		ft_key_error(key, "unset", state);
 		return (0);
 	}
-	
-	// First character must be letter or underscore
 	if (!ft_isalpha(key[0]) && key[0] != '_')
 	{
 		ft_key_error(key, "unset", state);
 		return (0);
 	}
-	
-	// Rest must be alphanumeric or underscore
 	i = 1;
 	while (key[i])
 	{
@@ -28,7 +36,6 @@ static int	ft_validate_unset_key(char *key, t_state *state)
 		}
 		i++;
 	}
-	
 	return (1);
 }
 
@@ -39,30 +46,22 @@ void	ft_unset_variable(t_state **state, t_cluster *cluster)
 
 	i = 1;
 	has_error = 0;
-	
-	// If no arguments, unset succeeds (bash behavior)
 	if (!cluster->cmd[i])
 	{
 		(*state)->error = 0;
-		return;
+		return ;
 	}
-	
 	while (cluster->cmd[i])
 	{
-		// Validate variable name
 		if (!ft_validate_unset_key(cluster->cmd[i], *state))
 		{
 			has_error = 1;
 			i++;
-			continue;
+			continue ;
 		}
-		
-		// Remove from both env and export lists
 		ft_del_node(&(*state)->env, cluster->cmd[i]);
 		ft_del_node(&(*state)->exp, cluster->cmd[i]);
-		
 		i++;
 	}
-	
 	(*state)->error = has_error;
 }

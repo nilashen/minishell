@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_execution.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:22:15 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 15:25:04 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static void	ft_exec_file_check(t_state *state, t_cluster *cluster)
@@ -14,17 +26,17 @@ static void	ft_exec_file_check(t_state *state, t_cluster *cluster)
 				exit(0);
 			}
 			else
-				ft_execute_pipeline_error(cluster->cmd, "permission denied", 126);
+				ft_pipeline_error(cluster->cmd, "permission denied", 126);
 		}
 		else
 		{
 			if (ft_strcmp(state->cluster->cmd[0], ".") == 0)
-				ft_execute_pipeline_error(cluster->cmd, "filename argument required",
+				ft_pipeline_error(cluster->cmd, "filename argument required",
 					2);
 			else if (ft_strcmp(state->cluster->cmd[0], "..") == 0)
-				ft_execute_pipeline_error(cluster->cmd, "commond not found", 127);
+				ft_pipeline_error(cluster->cmd, "commond not found", 127);
 			else
-				ft_execute_pipeline_error(cluster->cmd, "is a directory", 126);
+				ft_pipeline_error(cluster->cmd, "is a directory", 126);
 		}
 	}
 }
@@ -46,92 +58,54 @@ static char	*ft_cmd_get(t_state *state, t_cluster *cluster)
 	return (NULL);
 }
 
-static void	ft_open_pipes(t_state *state)
+void	ft_open_pipes(t_state *state)
 {
-    int	**fd;
-    int	i;
+	int	**fd;
 
-    i = -1;
-    fd = (int **)malloc(sizeof(int *) * state->cmd_count);
-    if (!fd)
-        return ; // Handle malloc failure
-    fd[state->cmd_count - 1] = NULL;
-    while (++i < state->cmd_count - 1)
-    {
-        fd[i] = malloc(sizeof(int) * 2);
-        if (!fd[i])
-        {
-            // Clean up previously allocated pipes
-            while (--i >= 0)
-                free(fd[i]);
-            free(fd);
-            return ;
-        }
-        if (pipe(fd[i]) == -1)
-        {
-            perror("pipe");
-            // Handle pipe creation failure
-            while (i >= 0)
-                free(fd[i--]);
-            free(fd);
-            return ;
-        }
-    }
-    state->fd = fd;
+	fd = ft_allocate_pipes(state);
+	if (!fd)
+		return ;
+	if (ft_create_pipes(fd, state->cmd_count) == -1)
+		return ;
+	state->fd = fd;
 }
 
-static void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
+void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 {
-    char	*cmd_path;
+	char	*cmd_path;
 
-    // Reset signal handling for child processes
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
-    
-    ft_dup_init(state, cluster, i, check);
-    if (state->cmd_count > 1 && check > 0)
-    {
-        ft_dispatch_builtin(state, cluster);
-        free(state->line);
-        exit(state->error);
-    }
-    cmd_path = ft_cmd_get(state, cluster);
-    if (cmd_path == NULL && cluster->cmd[0] != NULL)
-        ft_execute_pipeline_error(cluster->cmd, "command not found", 127);
-    exit(127);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	ft_dup_init(state, cluster, i, check);
+	if (state->cmd_count > 1 && check > 0 && check != 7)
+	{
+		ft_dispatch_builtin(state, cluster);
+		free(state->line);
+		exit(state->error);
+	}
+	cmd_path = ft_cmd_get(state, cluster);
+	if (cmd_path == NULL && cluster->cmd[0] != NULL)
+		ft_pipeline_error(cluster->cmd, "command not found", 127);
+	exit(127);
 }
 
 void	ft_execute_pipeline(t_state *state, int i)
 {
-    t_cluster	*tmp;
-    int			check;
+	t_cluster	*tmp;
+	int			check;
 
-    ft_open_pipes(state);
-    tmp = state->cluster;
-    while (tmp)
-    {
-        check = ft_is_builtin_command(tmp);
-        if (tmp->cmd)
-        {
-            if (check > 0 && state->cmd_count == 1)
-                ft_dispatch_builtin(state, tmp);
-            else
-            {
-                g_sig_status = IN_CAT;
-                tmp->pid = fork();
-                if (tmp->pid == 0)
-                    ft_execve(state, tmp, i, check);
-                else if (tmp->pid < 0)
-                {
-                    perror("fork");
-                    state->error = 1;
-                    g_sig_status = 0;
-                    return;
-                }
-            }
-            i++;
-        }
-        tmp = tmp->next;
-    }
-    ft_close_pipe(state, check);
+	ft_open_pipes(state);
+	tmp = state->cluster;
+	while (tmp)
+	{
+		check = ft_is_builtin_command(tmp);
+		if (tmp->cmd)
+		{
+			ft_handle_builtin(state, tmp, check, &i);
+			if (state->error)
+				return ;
+		}
+		tmp = tmp->next;
+	}
+	ft_close_pipe(state, check);
 }

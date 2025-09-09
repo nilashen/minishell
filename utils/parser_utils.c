@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:25:59 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:26:00 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	ft_count_real_char(char *line, char c, t_parser *parser)
@@ -9,14 +21,14 @@ int	ft_count_real_char(char *line, char c, t_parser *parser)
 	i = 0;
 	while (i < (int)ft_strlen(line) && line[i] != '\0')
 	{
-		if (line[i] == c && ft_quote_check(line, i, parser) == 0)
+		if (line[i] == c && ft_qcheck(line, i, parser) == 0)
 			count++;
-		else if (line[i] == c && ft_quote_check(line, i, parser) != 0)
+		else if (line[i] == c && ft_qcheck(line, i, parser) != 0)
 		{
 			while (line[++i])
 			{
 				if ((line[i] == c || line[i + 1] == '\0')
-					&& ft_quote_check(line, i, parser) == 0)
+					&& ft_qcheck(line, i, parser) == 0)
 				{
 					count++;
 					break ;

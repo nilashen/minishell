@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_dollar_expand.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:36:46 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 15:37:19 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	ft_mini_dollar_counter(char *str, int ***chck_dolr, int ***chck_dq)
@@ -34,16 +46,12 @@ static int	ft_init_united(int **chk_dq, int **chk_dolr, char **tmp,
 
 	len = ft_strlen(prs->key);
 	count = ft_mini_dollar_counter(prs->key, &chk_dolr, &chk_dq);
-	
 	ft_handle_double_quote_check(chk_dq, tmp, prs, len);
-	
 	check_sub = ft_split_key_by_quotes(prs, len);
 	if (check_sub == -1)
 		return (0);
-	
 	if (!ft_allocate_united_env(prs, count))
 		return (0);
-	
 	return (check_sub);
 }
 

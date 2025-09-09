@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   memory_cleanup.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:06:02 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:06:20 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	ft_error_message(char *str)
@@ -38,7 +50,7 @@ int	ft_full_free(t_state *state, int status)
 	free(state->pars);
 	free(state);
 	if (status != 255 && status != 1)
-		// ft_putstr_fd("exit\n", 2);
+		ft_putstr_fd("exit\n", 2);
 	state = NULL;
 	exit(status);
 }

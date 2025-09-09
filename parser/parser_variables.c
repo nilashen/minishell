@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_variables.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:53:36 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:20:47 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	ft_count_dollar(char *str, t_parser *parser)
@@ -13,7 +25,7 @@ int	ft_count_dollar(char *str, t_parser *parser)
 		{
 			while (str[i] && str[i] != '$')
 				i++;
-			if (str[i] == '$' && ft_is_dollar(str, i, parser))
+			if (str[i] == '$' && ft_dol(str, i, parser))
 				count_dollar++;
 			while (str[i] && str[i] != ' ')
 				i++;
@@ -22,32 +34,17 @@ int	ft_count_dollar(char *str, t_parser *parser)
 	return (count_dollar);
 }
 
-int	ft_is_dollar(char *str, int i, t_parser *parser)
+int	ft_dol(char *str, int i, t_parser *parser)
 {
-	char	*check_str;
-	int		dval;
-	int		sval;
-	int		start;
-
-	start = 0;
-	if (str[i] == '$' && str[i +1] != '\0' && str[i +1] != ' '
-		&& str[i +1] != '"' && str[i +1] != '\'' && ft_check_special(str, i +1))
-	{
-		start = i;
-		while (str[i] && (str[i] != ' ' || (str[i] == ' '
-					&& ft_quote_check(str, i, parser))))
-			i++;
-		check_str = ft_substr(str, start, (i - start));
-		dval = ft_count_quote(check_str, i - start, '"') % 2;
-		sval = ft_count_quote(check_str, i - start, '\'') % 2;
-		if ((dval && sval && check_str[i - start -1] != '\'')
-			|| (!dval && !sval) || (dval && !sval)
-			|| (sval && ft_check_is_in(str, i, parser)))
-			start = -1;
-		free(check_str);
-	}
-	if (start == -1)
+	if (str[i] != '$' || str[i + 1] == '\0' || str[i + 1] == ' ')
+		return (0);
+	if (ft_is_braced_dollar(str, i))
 		return (1);
+	if (str[i + 1] != '"' && str[i + 1] != '\'' && ft_check_special(str, i + 1))
+	{
+		if (ft_is_valid_dollar(str, i, parser))
+			return (1);
+	}
 	return (0);
 }
 

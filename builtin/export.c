@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 14:43:41 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 14:43:48 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static void	ft_swap_env_nodes(t_env **ptr1, int *swapped)
@@ -93,4 +105,3 @@ void	ft_add_exp(t_state **state, char *arg)
 	(*state)->exp = tmp_exp;
 	(*state)->error = 0;
 }
-

@@ -1,31 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_env.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:37:55 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:20:47 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-static char	*ft_find_env(char *str, int n, t_parser *parser, t_env *env)
+static char	*ft_env(char *str, int n, t_parser *parser, t_env *env)
 {
 	char	*dest;
 
-	dest = NULL;
-	parser->key = ft_substr(str, 0, n);
-	if (!parser->key || !str)
-		return (NULL);
-	if (ft_isdigit(parser->key[0])
-		|| parser->key[0] == '@' || parser->key[0] == '*')
-		dest = ft_strdup(parser->key + 1);
-	else if (parser->key[0] == '$' && !ft_strchr(parser->key + 1, '$'))
-		dest = ft_strdup(parser->key);
-	else if (parser->key[0] == '$' && ft_strchr(parser->key + 1, '$'))
-		dest = ft_refind_env(parser, env);
-	else if (parser->key[0] != '$' && ft_strchr(parser->key + 1, '$'))
-		dest = ft_united_dollar(parser, env);
-	else if (!ft_check_after_key(parser->key))
-		dest = ft_dup_key(parser->key, parser, env);
-	else
-		dest = ft_join_key(parser->key, ft_check_after_key(parser->key), env);
-	free(parser->key);
-	return (dest);
+	dest = ft_find_env_braced(str, n, parser, env);
+	if (dest)
+		return (dest);
+	return (ft_find_env_key(str, n, parser, env));
 }
 
-static char	*ft_env_handler(char *str, t_env *env, t_parser *parser)
+char	*ft_env_handler(char *str, t_env *env, t_parser *parser)
 {
 	char	*tmp_str;
 	char	*env_str;
@@ -42,7 +39,7 @@ static char	*ft_env_handler(char *str, t_env *env, t_parser *parser)
 	if (parser->len_dollar[0] == -1)
 		env_str = ft_strdup("");
 	else
-		env_str = ft_find_env(str + parser->len_dollar[0], dolrlen, parser, env);
+		env_str = ft_env(str + parser->len_dollar[0], dolrlen, parser, env);
 	if (parser->dollar_is_first)
 		dest = ft_strjoin(env_str, tmp_str);
 	else
@@ -52,33 +49,22 @@ static char	*ft_env_handler(char *str, t_env *env, t_parser *parser)
 	return (dest);
 }
 
-char *ft_dollar_handler(char *str, t_node *dollar, t_parser *prs, t_env *env)
+char	*ft_dol_handler(char *str, t_node *dollar, t_parser *prs, t_env *env)
 {
-    t_node *new_node;
-
-    if (!str || !prs)
-        return (NULL);
-    dollar = NULL;
-    prs->d = 0;
-    while (str[prs->d])
-    {
-        if (str[prs->d] == '$' && ft_is_dollar(str, prs->d, prs))
-            prs->dollar_is_first = 1;
-        else
-            prs->dollar_is_first = 0;
-        ft_pars_str(str, prs);   
-        char *env_result = ft_env_handler(str, env, prs);
-        if (!env_result)
-            env_result = ft_strdup("");         
-        new_node = ft_new_node(env_result);
-        if (!new_node)
-        {
-            free(env_result);
-            return (NULL);
-        }
-        ft_node_add_back(&dollar, new_node);
-    }
-    return (ft_node_resizer(dollar));
+	if (!str || !prs)
+		return (NULL);
+	dollar = NULL;
+	prs->d = 0;
+	while (str[prs->d])
+	{
+		if (str[prs->d] == '$' && ft_dol(str, prs->d, prs))
+			prs->dollar_is_first = 1;
+		else
+			prs->dollar_is_first = 0;
+		if (!ft_process_dollar_token(str, prs, env, &dollar))
+			return (NULL);
+	}
+	return (ft_node_resizer(dollar));
 }
 
 char	*ft_join_key(char *key, int index, t_env *env)

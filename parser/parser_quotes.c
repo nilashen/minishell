@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_quotes.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:52:56 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:15:56 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	ft_quote_count_check(char *str, int *check,
@@ -67,7 +79,7 @@ static int	ft_quote_handler(char *str, char *tmp, int len, t_parser *prs)
 	return (0);
 }
 
-int	ft_quote_check(char *str, int len, t_parser *pars)
+int	ft_qcheck(char *str, int len, t_parser *pars)
 {
 	char	*tmp;
 	char	*new_str;

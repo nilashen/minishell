@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_operations.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 11:07:11 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 11:09:28 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_print_env(t_state *state, t_cluster *cluster)
@@ -64,7 +76,7 @@ void	ft_add_env(t_state **state, char *arg)
 	{
 		if (ft_key_check(arg[i], i) == 0)
 		{
-			(*state)->error = 1; 
+			(*state)->error = 1;
 			return ;
 		}
 		i++;
@@ -86,17 +98,16 @@ void	ft_export_status(t_state **state, t_cluster *cluster)
 		return (ft_print_exp(state, cluster));
 	(*state)->error = 0;
 	while (cluster->cmd[i])
-    {
-        ft_add_exp(state, cluster->cmd[i]);
+	{
+		ft_add_exp(state, cluster->cmd[i]);
 		if ((*state)->error != 0)
 		{
 			has_error = 1;
 			i++;
-			continue;
+			continue ;
 		}
 		if (ft_strchr(cluster->cmd[i], '=') != NULL)
 			ft_add_env(state, cluster->cmd[i]);
-		
 		if ((*state)->error != 0)
 			has_error = 1;
 		i++;

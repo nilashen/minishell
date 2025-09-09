@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_cleanup_util.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:07:18 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:07:26 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_cleanup_arrays(t_parser *pars, int last_index)
@@ -29,6 +41,7 @@ int	ft_init_arrays(t_parser *pars, int len)
 	}
 	return (1);
 }
+
 int	ft_try_path_command(t_state *state, t_cluster *cluster, int i)
 {
 	char	*tmp;
@@ -44,7 +57,7 @@ int	ft_try_path_command(t_state *state, t_cluster *cluster, int i)
 	if (access(command, X_OK) == 0)
 	{
 		execve(command, cluster->cmd, state->envp);
-		ft_execute_pipeline_error(cluster->cmd, " Permission denied", 126);
+		ft_pipeline_error(cluster->cmd, " Permission denied", 126);
 	}
 	free(command);
 	return (0);

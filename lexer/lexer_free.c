@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_free.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:38:05 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:41:05 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static void	ft_close_cluster_fds(t_files *files)
@@ -31,16 +43,13 @@ static void	ft_free_single_cluster(t_cluster *cluster)
 {
 	if (!cluster)
 		return ;
-	
 	ft_free_double_str(cluster->cmd);
-	
 	if (cluster->files)
 	{
 		ft_close_cluster_fds(cluster->files);
 		ft_free_file_strings(cluster->files);
 		free(cluster->files);
 	}
-	
 	free(cluster);
 }
 
@@ -51,7 +60,6 @@ void	ft_all_cluster_free(t_state *state)
 
 	if (!state || !state->cluster)
 		return ;
-	
 	tmp = state->cluster;
 	while (tmp)
 	{
@@ -59,6 +67,5 @@ void	ft_all_cluster_free(t_state *state)
 		ft_free_single_cluster(tmp);
 		tmp = next;
 	}
-	
 	state->cluster = NULL;
 }

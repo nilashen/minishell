@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_tilde.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:53:13 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:15:56 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static char	*ft_tilde_handler(char *tmp, char *str, int *index, t_env *env)
@@ -38,7 +50,7 @@ static char	*ft_check_tilde(char *str, int i, t_parser *prs, t_env *env)
 	point = 0;
 	while (str[++i])
 	{
-		if (str[i] == '~' && !ft_quote_check(str, i, prs)
+		if (str[i] == '~' && !ft_qcheck(str, i, prs)
 			&& ((str[i +1] && (str[i +1] == '/' || str[i +1] == ' '))
 				|| str[i +1] == '\0') && ((i -1 >= 0 && (str[i -1] == ' '))
 				|| !i))

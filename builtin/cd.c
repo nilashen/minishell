@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 11:06:06 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 14:38:50 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static void	ft_dir_check(t_state **state, char *dir)
@@ -11,18 +23,21 @@ static void	ft_dir_check(t_state **state, char *dir)
 			if (access(dir, R_OK) == 0)
 			{
 				if (chdir(dir) != 0)
-					perror("CHDIR");
+					ft_cd_error(dir, *state);
 				else
 					(*state)->error = 0;
 			}
 			else
-				ft_builtin_cd_error(dir,*state);
+				ft_cd_error(dir, *state);
 		}
 		else
-			ft_builtin_cd_error(dir,*state);
+		{
+			errno = ENOTDIR;
+			ft_cd_error(dir, *state);
+		}
 	}
 	else
-		ft_builtin_cd_error(dir,*state);
+		ft_cd_error(dir, *state);
 }
 
 static void	ft_select_dir(t_state **state, char *type)
@@ -74,6 +89,15 @@ static void	ft_up_dir(t_state **state)
 
 static void	ft_execute_cd_command(t_state **state, t_cluster *tmp)
 {
+	int	argc;
+
+	argc = ft_count_args(tmp->cmd);
+	if (argc > 2)
+	{
+		write(STDERR_FILENO, "cd: too many arguments\n", 23);
+		(*state)->error = 1;
+		return ;
+	}
 	if (tmp->cmd == NULL || tmp->cmd[1] == NULL)
 		ft_select_dir(state, "HOME");
 	else if (ft_strcmp(tmp->cmd[1], "-") == 0)

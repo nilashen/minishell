@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_handling.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:03:59 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:04:00 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_cluster_free(t_cluster *cluster)
@@ -23,7 +35,7 @@ t_cluster	*ft_file_open_error(t_cluster *cluster, char *file)
 	return (NULL);
 }
 
-void	ft_execute_pipeline_error(char	**cmd, char *s, int exit_code)
+void	ft_pipeline_error(char	**cmd, char *s, int exit_code)
 {
 	write(2, "minishell: ", ft_strlen("minishell: "));
 	write(2, cmd[0], ft_strlen(cmd[0]));

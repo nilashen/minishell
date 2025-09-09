@@ -31,7 +31,8 @@ PARSER_SRCS = $(PARSER_DIR)/parser_chars.c $(PARSER_DIR)/parser_clean.c \
               $(PARSER_DIR)/parser_free.c $(PARSER_DIR)/parser_len.c \
               $(PARSER_DIR)/parser_main.c $(PARSER_DIR)/parser_tilde.c \
               $(PARSER_DIR)/parser_nodes.c $(PARSER_DIR)/parser_pipes.c \
-              $(PARSER_DIR)/parser_input_redirect.c $(PARSER_DIR)/parser_output_redirect.c \
+              $(PARSER_DIR)/parser_input_redirect.c $(PARSER_DIR)/parser_output_redirect.c
+			  
               
 UTILS_SRCS = $(UTILS_DIR)/get_env.c $(UTILS_DIR)/route_builtin_dispatcher.c \
 			 $(UTILS_DIR)/memory_cleanup.c $(UTILS_DIR)/error_handling.c \
@@ -39,7 +40,10 @@ UTILS_SRCS = $(UTILS_DIR)/get_env.c $(UTILS_DIR)/route_builtin_dispatcher.c \
 			 $(UTILS_DIR)/parser_utils.c $(UTILS_DIR)/parser_quotes_utils.c \
 			 $(UTILS_DIR)/get_next_line.c $(UTILS_DIR)/signal.c \
 			 $(UTILS_DIR)/parser_dollar_expand_utils.c $(UTILS_DIR)/parser_utils2.c \
-			 $(UTILS_DIR)/parser_cleanup_util.c $(UTILS_DIR)/export_utils.c
+			 $(UTILS_DIR)/parser_cleanup_util.c $(UTILS_DIR)/export_utils.c \
+			 $(UTILS_DIR)/cd_utils.c $(UTILS_DIR)/parser_env_utils2.c \
+			 $(UTILS_DIR)/command_executions_utils.c $(UTILS_DIR)/process_management_utils.c \
+			 $(UTILS_DIR)/lexer_heredoc_utils.c 
 
 SRCS = main.c $(BUILTIN_SRCS) $(EXECUTOR_SRCS) \
        $(LEXER_SRCS) $(PARSER_SRCS) $(UTILS_SRCS)

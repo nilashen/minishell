@@ -1,27 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 11:06:22 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 11:06:48 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
-
-// int	ft_flag_check(char **cmd)
-// {
-// 	int	i;
-// 	int	j;
-
-// 	i = 1;
-// 	while (cmd[i])
-// 	{
-// 		j = 0;
-// 		if (cmd[i][j] != '-')
-// 			return (i);
-// 		if (cmd[i][j] == '-' && cmd[i][j + 1] == '\0')
-// 			return (i);
-// 		while (cmd[i][++j])
-// 		{
-// 			if (cmd[i][j] != 'n')
-// 				return (i);
-// 		}
-// 		i++;
-// 	}
-// 	return (i);
-// }
 
 static int	ft_parse_echo_flags(char **cmd, int *no_newline)
 {

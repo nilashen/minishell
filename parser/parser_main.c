@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_main.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:49:21 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 15:50:40 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 int	ft_clean_str(char **str, t_parser *pars)
@@ -69,7 +81,7 @@ char	**ft_put_env(char **str, t_state *state)
 		count_dolr = ft_count_dollar(str[i], state->pars);
 		env = state->env;
 		if (count_dolr)
-			dest[i] = ft_dollar_handler(str[i], state->dollar, state->pars, env);
+			dest[i] = ft_dol_handler(str[i], state->dollar, state->pars, env);
 		else
 			dest[i] = ft_strdup(str[i]);
 	}
@@ -96,7 +108,7 @@ int	ft_parser(t_state *state)
 	char	*line;
 	char	**split_str;
 	int		validation_result;
-	
+
 	validation_result = ft_validate_parser_input(state);
 	if (validation_result != -1)
 		return (validation_result);

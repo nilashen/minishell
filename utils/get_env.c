@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_env.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:04:28 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:05:27 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_env_addback(t_env **lst, t_env *new)
@@ -69,18 +81,20 @@ void	ft_separate_path(t_state *state)
 
 int	ft_get_exit_code(int status)
 {
-    if (WIFEXITED(status))
-        return (WEXITSTATUS(status));
-    else if (WIFSIGNALED(status))
-    {
-        int sig = WTERMSIG(status);
-        if (sig == SIGINT)
-            return (130);
-        else if (sig == SIGQUIT)
-            return (131);
-        else if (sig == SIGPIPE)
-            return (0);
-        return (128 + sig);
-    }
-    return (0);
+	int	sig;
+
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
+			return (130);
+		else if (sig == SIGQUIT)
+			return (131);
+		else if (sig == SIGPIPE)
+			return (0);
+		return (128 + sig);
+	}
+	return (0);
 }

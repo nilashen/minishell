@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process_management.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:27:57 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:30:25 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_int_free(t_state *state)
@@ -19,52 +31,26 @@ void	ft_int_free(t_state *state)
 
 void	ft_wait(t_state *state, int check)
 {
-    t_cluster	*tmp;
-    int			status;
-    int			last_exit_code;
+	t_cluster	*tmp;
+	int			status;
+	int			last_exit_code;
 
-    (void)check;
-    last_exit_code = 0;
-    tmp = state->cluster;
-    
-    g_sig_status = IN_PARENT;
-    
-    while (tmp)
-    {
-        if (tmp->pid > 0)
-        {
-            if (waitpid(tmp->pid, &status, 0) > 0)
-            {
-                if (WIFSIGNALED(status))
-                {
-                    int sig = WTERMSIG(status);
-                    if (sig == SIGINT)
-                    {
-                        last_exit_code = 130;
-                        write(STDOUT_FILENO, "\n", 1); // Add newline after ^C
-                    }
-                    else if (sig == SIGQUIT)
-                    {
-                        last_exit_code = 131;
-                        write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-                    }
-                    else if (sig == SIGPIPE)
-                        last_exit_code = 0;
-                    else
-                        last_exit_code = 128 + sig;
-                }
-                else if (WIFEXITED(status))
-                {
-                    last_exit_code = WEXITSTATUS(status);
-                }
-            }
-        }
-        tmp = tmp->next;
-    }
-    
-    g_sig_status = 0;
-    state->error = last_exit_code;
-    ft_int_free(state);
+	(void)check;
+	last_exit_code = 0;
+	tmp = state->cluster;
+	g_sig_status = IN_PARENT;
+	while (tmp)
+	{
+		if (tmp->pid > 0)
+		{
+			if (waitpid(tmp->pid, &status, 0) > 0)
+				last_exit_code = ft_handle_wait_status(status);
+		}
+		tmp = tmp->next;
+	}
+	g_sig_status = 0;
+	state->error = last_exit_code;
+	ft_int_free(state);
 }
 
 void	ft_close_pipe(t_state *state, int check)

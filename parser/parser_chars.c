@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_chars.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:36:25 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:15:56 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	ft_check_last_redirect(t_parser *parser)
@@ -45,12 +57,12 @@ static int	ft_redher_check(char *line, char typ, char typ2, t_parser *parser)
 	i = -1;
 	while (line[++i])
 	{
-		if (line[i] == typ && !ft_quote_check(line, i, parser))
+		if (line[i] == typ && !ft_qcheck(line, i, parser))
 		{
 			if (line[i +1] == typ)
 				++i;
 			start = ++i;
-			while (line[i] && !ft_quote_check(line, i, parser)
+			while (line[i] && !ft_qcheck(line, i, parser)
 				&& (line[i] == typ || line[i] == typ2 || line[i] == ' '))
 				i++;
 			if (ft_check_sub_redirect(line, start, i))

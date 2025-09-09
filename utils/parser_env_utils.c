@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_env_utils.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:18:29 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:20:47 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_pars_str(char *s, t_parser *prs)
@@ -16,10 +28,10 @@ void	ft_pars_str(char *s, t_parser *prs)
 		prs->len_str[0] = prs->d;
 		while ((s[prs->d] && s[prs->d] != '$'))
 			prs->d++;
-		if (s[prs->d] == '$' && !ft_is_dollar(s, prs->d, prs))
+		if (s[prs->d] == '$' && !ft_dol(s, prs->d, prs))
 		{
 			prs->d++;
-			while ((s[prs->d] && s[prs->d] == '$' && !ft_is_dollar(s, prs->d, prs))
+			while ((s[prs->d] && s[prs->d] == '$' && !ft_dol(s, prs->d, prs))
 				|| (s[prs->d] && s[prs->d] != '$'))
 				prs->d++;
 		}
@@ -34,11 +46,11 @@ void	ft_pars_str_helper(char *s, t_parser *prs)
 	prs->len_str[0] = prs->d;
 	while ((s[prs->d] && s[prs->d] != '$'))
 		prs->d++;
-	if (s[prs->d] == '$' && !ft_is_dollar(s, prs->d, prs))
+	if (s[prs->d] == '$' && !ft_dol(s, prs->d, prs))
 	{
 		prs->d++;
 		while ((s[prs->d] && s[prs->d] != '$')
-			|| (s[prs->d] && s[prs->d] == '$' && !ft_is_dollar(s, prs->d, prs)))
+			|| (s[prs->d] && s[prs->d] == '$' && !ft_dol(s, prs->d, prs)))
 			prs->d++;
 	}
 	prs->len_str[1] = prs->d -1;
@@ -80,7 +92,7 @@ int	ft_check_is_in(char *str, int index, t_parser *parser)
 	char	*sub;
 
 	sub = ft_substr(str, 0, index);
-	if (ft_quote_check(sub, index, parser) == 2)
+	if (ft_qcheck(sub, index, parser) == 2)
 	{
 		free(sub);
 		sub = NULL;

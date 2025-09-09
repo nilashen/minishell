@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:34:10 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 17:16:16 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -24,7 +36,7 @@
 //  Struct Type Declarations
 typedef struct s_files
 {
-	int		fd_heredoc[4];
+	int		fd_heredoc[2];
 	int		error;
 	int		fd_input;
 	int		fd_output;
@@ -130,9 +142,11 @@ void		ft_unset_variable(t_state **state, t_cluster *cluster);
 void		ft_export_status(t_state **state, t_cluster *cluster);
 void		ft_notdefine_dir(char *s, t_state *state);
 void		ft_builtin_cd_error(char *dir, t_state *state);
-void		ft_builtin_exit(t_state *state, t_cluster *cluster);
+int			ft_builtin_exit(t_state *state, t_cluster *cluster);
 void		ft_dispatch_builtin(t_state *state, t_cluster *tmp);
 int			ft_is_builtin_command(t_cluster *cluster);
+void		ft_cd_error(char *dir, t_state *state);
+int			ft_count_args(char **cmd);
 
 //  Parsing & Lexer Functions
 int			ft_parser(t_state *state);
@@ -146,7 +160,7 @@ int			ft_validate_syntax(char *line, t_state *state);
 int			ft_split_and_clean(char *line, t_state *state, char ***split_str);
 int			ft_process_parsed_data(char *line, t_state *state);
 int			ft_count_real_char(char *line, char c, t_parser *parser);
-int			ft_quote_check(char *str, int len, t_parser *pars);
+int			ft_qcheck(char *str, int len, t_parser *pars);
 int			ft_count_quote(char *str, int len, char quote_type);
 void		ft_send_cleaner(t_parser *parser);
 void		ft_init_paremeter(t_parser *pars);
@@ -156,6 +170,18 @@ int			ft_split_key_by_quotes(t_parser *prs, int len);
 void		ft_handle_double_quote_check(int **chk_dq, char **tmp,
 				t_parser *prs, int len);
 char		*ft_prepare_input_line(t_state *state);
+char		*ft_find_env_braced(char *str, int n, t_parser *parser, t_env *env);
+char		*ft_find_env_key(char *str, int n, t_parser *parser, t_env *env);
+int			**ft_allocate_pipes(t_state *state);
+int			ft_create_pipes(int **fd, int count);
+void		ft_handle_builtin(t_state *state, t_cluster *tmp, int check,
+				int *i);
+void		ft_execve(t_state *state, t_cluster *cluster, int i, int check);
+int			ft_process_dollar_token(char *str, t_parser *prs, t_env *env,
+				t_node **dollar);
+char		*ft_env_handler(char *str, t_env *env, t_parser *parser);
+int			ft_is_braced_dollar(char *str, int i);
+int			ft_is_valid_dollar(char *str, int i, t_parser *parser);
 
 //  Redirection & Pipe Checking
 int			ft_redirection_control(t_parser *parser, int i);
@@ -165,8 +191,8 @@ void		ft_left_redirect(char *str, int len, char type, t_parser *pars);
 
 //  Environment Variable Handling
 int			ft_count_dollar(char *str, t_parser *parser);
-int			ft_is_dollar(char *str, int index, t_parser *pars);
-char		*ft_dollar_handler(char *str, t_node *dollar, t_parser *prs,
+int			ft_dol(char *str, int index, t_parser *pars);
+char		*ft_dol_handler(char *str, t_node *dollar, t_parser *prs,
 				t_env *env);
 char		*ft_united_dollar(t_parser *parser, t_env *env);
 char		*ft_dup_key(char *key, t_parser *pars, t_env *env);
@@ -205,7 +231,7 @@ char		**ft_put_tilde(char **str, t_state *state, t_parser *parser);
 
 //  Execution & Process Control
 void		ft_execute_pipeline(t_state *state, int i);
-void		ft_execute_pipeline_error(char **cmd, char *s, int exit_code);
+void		ft_pipeline_error(char **cmd, char *s, int exit_code);
 void		ft_wait(t_state *state, int check);
 void		ft_close_pipe(t_state *state, int check);
 void		ft_dup_init(t_state *state, t_cluster *cluster, int i, int check);
@@ -222,6 +248,14 @@ int			ft_open_append(char *file);
 t_cluster	*ft_file_open_error(t_cluster *cluster, char *file);
 void		ft_heredoc_check(t_files *node, char **arg);
 char		**ft_find_cmd(char **arg, int len);
+int			ft_heredoc_parent(t_files *node, int pid);
+void		ft_heredoc_child(t_files *node);
+void		ft_handle_heredoc_error(t_files *node);
+void		ft_handle_heredoc_success(t_files *node);
+int			ft_heredoc(t_files *node);
+int			ft_parent_heredoc(t_files *node, int pid);
+void		ft_heredoc_helper(char *line, t_files *node);
+char		*ft_read_all_heredoc(int fd);
 
 //  Miscellaneous and Signals
 char		*get_next_line(int fd);
@@ -240,4 +274,5 @@ int			ft_allocate_united_env(t_parser *prs, int count);
 int			ft_try_path_command(t_state *state, t_cluster *cluster, int i);
 void		ft_pars_str(char *s, t_parser *prs);
 void		ft_pars_str_helper(char *s, t_parser *prs);
+int			ft_handle_wait_status(int status);
 #endif

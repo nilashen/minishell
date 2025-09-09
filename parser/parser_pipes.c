@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_pipes.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:52:49 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:15:56 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	ft_wordlen(char *s, char c, int j, t_parser *parser)
@@ -6,7 +18,7 @@ static int	ft_wordlen(char *s, char c, int j, t_parser *parser)
 
 	i = 0;
 	while (s[j]
-		&& (s[j] != c || (s[j] == c && ft_quote_check(s, j, parser))))
+		&& (s[j] != c || (s[j] == c && ft_qcheck(s, j, parser))))
 	{
 		j++;
 		i++;
@@ -25,7 +37,7 @@ static char	*ft_write(char *s, char c, int start, t_parser *parser)
 	dest = malloc(sizeof(char) * (ft_wordlen(s, c, start, parser) + 1));
 	if (!dest)
 		return (0);
-	while (s[i] && (s[i] != c || (s[i] == c && ft_quote_check(s, i, parser))))
+	while (s[i] && (s[i] != c || (s[i] == c && ft_qcheck(s, i, parser))))
 	{
 		dest[j] = s[i];
 		i++;
@@ -50,11 +62,11 @@ char	**ft_pipe_split(char *s, char c, t_parser *pars)
 		return (0);
 	while (s[i])
 	{
-		while (s[i] && s[i] == c && !ft_quote_check(s, i, pars))
+		while (s[i] && s[i] == c && !ft_qcheck(s, i, pars))
 			i++;
 		if (s[i] != '\0')
 			dest[++j] = ft_write(s, c, i, pars);
-		while (s[i] && (s[i] != c || (s[i] == c && ft_quote_check(s, i, pars))))
+		while (s[i] && (s[i] != c || (s[i] == c && ft_qcheck(s, i, pars))))
 			i++;
 	}
 	dest[++j] = NULL;
@@ -72,7 +84,7 @@ int	ft_pipe_check(char *line, t_parser *parser)
 		return (1);
 	while (line[++i])
 	{
-		if (line[i] == '|' && !ft_quote_check(line, i, parser))
+		if (line[i] == '|' && !ft_qcheck(line, i, parser))
 		{
 			start = i +1;
 			while (line[i] && (line[i] == '|' || line[i] == ' '))

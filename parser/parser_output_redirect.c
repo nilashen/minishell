@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_output_redirect.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 15:52:33 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:15:56 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	ft_right_redirect(char *str, int len, t_parser *pars)
@@ -19,20 +31,20 @@ static int	ft_right_redirect(char *str, int len, t_parser *pars)
 
 static void	ft_heradoc_handler(char *str, t_parser *prs)
 {
-	if (str[prs->r] == '<' && !ft_quote_check(str, prs->r, prs)
+	if (str[prs->r] == '<' && !ft_qcheck(str, prs->r, prs)
 		&& (str[prs->r +1] && str[prs->r +1] == '<')
 		&& prs->r -1 >= 0 && str[prs->r -1] != ' ')
 		ft_left_redirect(str, prs->r, 'h', prs);
-	if (str[prs->r] == '<' && !ft_quote_check(str, prs->r, prs)
+	if (str[prs->r] == '<' && !ft_qcheck(str, prs->r, prs)
 		&& (str[prs->r +1] && str[prs->r +1] == '<')
 		&& str[prs->r +2] && str[prs->r +2] != ' ')
 		ft_right_redirect(str, (++prs->r +1), prs);
 	ft_check_control(prs);
-	if (str[prs->r] == '>' && !ft_quote_check(str, prs->r, prs)
+	if (str[prs->r] == '>' && !ft_qcheck(str, prs->r, prs)
 		&& (str[prs->r +1] && str[prs->r +1] == '>')
 		&& prs->r -1 >= 0 && str[prs->r -1] != ' ')
 		ft_left_redirect(str, prs->r, 'h', prs);
-	if (str[prs->r] == '>' && !ft_quote_check(str, prs->r, prs)
+	if (str[prs->r] == '>' && !ft_qcheck(str, prs->r, prs)
 		&& (str[prs->r +1] && str[prs->r +1] == '>')
 		&& str[prs->r +2] && str[prs->r +2] != ' ')
 		ft_right_redirect(str, (++prs->r +1), prs);
@@ -45,19 +57,19 @@ static t_node	*ft_redirect_handler(char *str, t_parser *prs)
 	while (str[++prs->r])
 	{
 		ft_heradoc_handler(str, prs);
-		if (str[prs->r] == '>' && !ft_quote_check(str, prs->r, prs)
+		if (str[prs->r] == '>' && !ft_qcheck(str, prs->r, prs)
 			&& str[prs->r +1] && str[prs->r +1] != '>'
 			&& prs->r -1 >= 0 && str[prs->r -1] != ' ' && str[prs->r -1] != '>')
 			ft_left_redirect(str, prs->r, 'r', prs);
-		if (str[prs->r] == '>' && !ft_quote_check(str, prs->r, prs)
+		if (str[prs->r] == '>' && !ft_qcheck(str, prs->r, prs)
 			&& str[prs->r +1] && str[prs->r +1] != ' ' && str[prs->r +1] != '>')
 			ft_right_redirect(str, prs->r +1, prs);
 		ft_check_control(prs);
-		if (str[prs->r] == '<' && !ft_quote_check(str, prs->r, prs)
+		if (str[prs->r] == '<' && !ft_qcheck(str, prs->r, prs)
 			&& str[prs->r + 1] && str[prs->r +1] != '<'
 			&& prs->r -1 >= 0 && str[prs->r -1] != ' ' && str[prs->r -1] != '<')
 			ft_left_redirect(str, prs->r, 'r', prs);
-		if (str[prs->r] == '<' && !ft_quote_check(str, prs->r, prs)
+		if (str[prs->r] == '<' && !ft_qcheck(str, prs->r, prs)
 			&& str[prs->r +1] && str[prs->r +1] != ' ' && str[prs->r +1] != '<')
 			ft_right_redirect(str, prs->r +1, prs);
 		ft_check_control(prs);

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 11:02:01 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 12:30:44 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./includes/minishell.h"
 
-int g_sig_status;
+int	g_sig_status;
 
 static void	ft_init_program(int argc, char **argv, char **envp, t_state **state)
 {
@@ -26,27 +38,22 @@ static void	ft_init_program(int argc, char **argv, char **envp, t_state **state)
 
 static char	*ft_get_input_line(void)
 {
-    char	*line;
-    char	*result;
+	char	*line;
+	char	*result;
 
-    if (isatty(fileno(stdin)))
-    {
-        line = readline("minishell $ ");
-        // Handle Ctrl+D (EOF) - readline returns NULL
-        if (!line)
-        {
-            write(STDOUT_FILENO, "exit\n", 5);
-            return (NULL);
-        }
-        return (line);
-    }
-    
-    line = get_next_line(fileno(stdin));
-    if (!line)
-        return (NULL);
-    result = ft_strtrim(line, "\n");
-    free(line);
-    return (result);
+	if (isatty(fileno(stdin)))
+	{
+		line = readline("minishell $ ");
+		if (!line)
+			return (NULL);
+		return (line);
+	}
+	line = get_next_line(fileno(stdin));
+	if (!line)
+		return (NULL);
+	result = ft_strtrim(line, "\n");
+	free(line);
+	return (result);
 }
 
 static void	ft_setup_loop_iteration(t_state *state)
@@ -68,9 +75,9 @@ static int	ft_handle_command_processing(t_state *state, int *final_exit_code)
 	{
 		*final_exit_code = state->error;
 		ft_free_double_str(state->sep_path);
-        free(state->line);
-        ft_all_cluster_free(state);
-        return (1);
+		free(state->line);
+		ft_all_cluster_free(state);
+		return (1);
 	}
 	*final_exit_code = state->error;
 	ft_free_double_str(state->sep_path);
@@ -81,19 +88,18 @@ static int	ft_handle_command_processing(t_state *state, int *final_exit_code)
 
 int	main(int argc, char **argv, char **envp)
 {
-    t_state	*state;
-    int		final_exit_code;
+	t_state	*state;
+	int		final_exit_code;
 
-    ft_init_program(argc, argv, envp, &state);
-    final_exit_code = 0;
-    
-    while (1)
-    {
-        ft_setup_loop_iteration(state);
-        if (!state->line) // EOF (Ctrl+D) - exit cleanly
-            break;
-        ft_handle_command_processing(state, &final_exit_code);
-    }
-    ft_full_free(state, final_exit_code);
-    return (final_exit_code);
+	ft_init_program(argc, argv, envp, &state);
+	final_exit_code = 0;
+	while (1)
+	{
+		ft_setup_loop_iteration(state);
+		if (!state->line)
+			break ;
+		ft_handle_command_processing(state, &final_exit_code);
+	}
+	ft_full_free(state, final_exit_code);
+	return (final_exit_code);
 }

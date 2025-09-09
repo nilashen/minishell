@@ -1,12 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   route_builtin_dispatcher.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/09 16:34:39 by nakunwar          #+#    #+#             */
+/*   Updated: 2025/09/09 16:34:44 by nakunwar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	ft_dispatch_builtin(t_state *state, t_cluster *tmp)
 {
 	if ((tmp->cmd) == NULL)
 		return ;
-	else if (ft_strcmp(tmp->cmd[0], "exit") == 0
-		&& tmp->pid != 0)
-		ft_builtin_exit(state, tmp);
 	else if (ft_strcmp(tmp->cmd[0], "cd") == 0)
 		ft_builtin_cd(&state);
 	else if (ft_strcmp(tmp->cmd[0], "pwd") == 0)
