@@ -6,20 +6,26 @@ static void	ft_signal_handler(int sig)
     {
         if (sig == SIGINT)
         {
-            write(STDOUT_FILENO, "\n", 1);
+            // Don't write newline here - let the child process handle it
+            // The newline will be printed when the process terminates
             rl_on_new_line();
-            // Don't reset g_sig_status here, let the parent process handle it
         }
+        // SIGQUIT will be handled by child process
     }
     else if (g_sig_status == IN_HEREDOC)
     {
         if (sig == SIGINT)
         {
             write(STDOUT_FILENO, "\n", 1);
-            exit(130); // Standard bash exit code for SIGINT
+            exit(130);
         }
     }
-    else if (g_sig_status == 0)  // Interactive mode
+    else if (g_sig_status == IN_PARENT)
+    {
+        // Parent waiting - do nothing, let child handle
+        return;
+    }
+    else // Interactive mode (g_sig_status == 0)
     {
         if (sig == SIGINT)
         {
@@ -33,13 +39,9 @@ static void	ft_signal_handler(int sig)
 
 void	ft_init_signals(void)
 {
+    // Handle SIGINT with custom handler
     signal(SIGINT, ft_signal_handler);
+    
+    // IGNORE SIGQUIT completely in interactive mode
     signal(SIGQUIT, SIG_IGN);
 }
-
-// void	ft_init_signals(void)
-// {
-// 	signal(SIGINT, ft_signal_handler);
-// 	signal(SIGTSTP, SIG_IGN);
-//     signal(SIGQUIT, SIG_IGN); 
-// }

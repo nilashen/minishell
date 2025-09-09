@@ -4,19 +4,22 @@ int	ft_validate_key(char *arg, t_state *state)
 {
 	int	i;
 
-	if (ft_key_check(arg[0], 0) == 0)
+	if (!arg || arg[0] == '\0')
 	{
 		ft_key_error(arg, "export", state);
-		state->error = 1;
 		return (0);
 	}
-	i = 0;
+	if (!ft_isalpha(arg[0]) && arg[0] != '_')
+	{
+		ft_key_error(arg, "export", state);
+		return (0);
+	}
+	i = 1;
 	while (arg[i] && arg[i] != '=')
 	{
-		if (ft_key_check(arg[i], i) == 0)
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 		{
 			ft_key_error(arg, "export", state);
-			state->error = 1;
 			return (0);
 		}
 		i++;

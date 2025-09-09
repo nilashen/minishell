@@ -87,12 +87,19 @@ void	ft_export_status(t_state **state, t_cluster *cluster)
 	(*state)->error = 0;
 	while (cluster->cmd[i])
     {
-        if (ft_strchr(cluster->cmd[i], '=') != NULL)
-            ft_add_env(state, cluster->cmd[i]);
         ft_add_exp(state, cluster->cmd[i]);
-        if ((*state)->error != 0)
+		if ((*state)->error != 0)
+		{
 			has_error = 1;
-        i++;
+			i++;
+			continue;
+		}
+		if (ft_strchr(cluster->cmd[i], '=') != NULL)
+			ft_add_env(state, cluster->cmd[i]);
+		
+		if ((*state)->error != 0)
+			has_error = 1;
+		i++;
 	}
 	(*state)->error = has_error;
 }

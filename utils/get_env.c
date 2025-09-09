@@ -69,16 +69,18 @@ void	ft_separate_path(t_state *state)
 
 int	ft_get_exit_code(int status)
 {
-	int	sig;
-
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		if (sig == SIGPIPE)
-			return (0);
-		return (128 + sig);
-	}
-	return (0);
+    if (WIFEXITED(status))
+        return (WEXITSTATUS(status));
+    else if (WIFSIGNALED(status))
+    {
+        int sig = WTERMSIG(status);
+        if (sig == SIGINT)
+            return (130);
+        else if (sig == SIGQUIT)
+            return (131);
+        else if (sig == SIGPIPE)
+            return (0);
+        return (128 + sig);
+    }
+    return (0);
 }

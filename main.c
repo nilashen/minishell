@@ -26,17 +26,27 @@ static void	ft_init_program(int argc, char **argv, char **envp, t_state **state)
 
 static char	*ft_get_input_line(void)
 {
-	char	*line;
-	char	*result;
+    char	*line;
+    char	*result;
 
-	if (isatty(fileno(stdin)))
-		return (readline("minishell $ "));
-	line = get_next_line(fileno(stdin));
-	if (!line)
-		return (NULL);
-	result = ft_strtrim(line, "\n");
-	free(line);
-	return (result);
+    if (isatty(fileno(stdin)))
+    {
+        line = readline("minishell $ ");
+        // Handle Ctrl+D (EOF) - readline returns NULL
+        if (!line)
+        {
+            write(STDOUT_FILENO, "exit\n", 5);
+            return (NULL);
+        }
+        return (line);
+    }
+    
+    line = get_next_line(fileno(stdin));
+    if (!line)
+        return (NULL);
+    result = ft_strtrim(line, "\n");
+    free(line);
+    return (result);
 }
 
 static void	ft_setup_loop_iteration(t_state *state)
@@ -71,18 +81,19 @@ static int	ft_handle_command_processing(t_state *state, int *final_exit_code)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_state	*state;
-	int		final_exit_code;
+    t_state	*state;
+    int		final_exit_code;
 
-	ft_init_program(argc, argv, envp, &state);
-	final_exit_code = 0;
-	while (1)
-	{
-		ft_setup_loop_iteration(state);
-		if (!state->line)
-			break;
-		ft_handle_command_processing(state, &final_exit_code);
-	}
-	ft_full_free(state, final_exit_code);
-	return (final_exit_code);
+    ft_init_program(argc, argv, envp, &state);
+    final_exit_code = 0;
+    
+    while (1)
+    {
+        ft_setup_loop_iteration(state);
+        if (!state->line) // EOF (Ctrl+D) - exit cleanly
+            break;
+        ft_handle_command_processing(state, &final_exit_code);
+    }
+    ft_full_free(state, final_exit_code);
+    return (final_exit_code);
 }

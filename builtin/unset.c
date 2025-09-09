@@ -1,70 +1,68 @@
 #include "../includes/minishell.h"
 
-static int	ft_value_check(t_state **state, char *key, char *value)
+static int	ft_validate_unset_key(char *key, t_state *state)
 {
-	t_env	*tmp;
-	int		check;
+	int	i;
 
-	check = 1;
-	tmp = (*state)->env;
-	while (tmp)
+	if (!key || key[0] == '\0')
 	{
-		if (ft_strcmp(tmp->key, key) == 0
-			&& ft_strcmp(tmp->value, value) == 0)
-			check = 0;
-		tmp = tmp->next;
+		ft_key_error(key, "unset", state);
+		return (0);
 	}
-	return (check);
-}
-
-static int	ft_del_if(t_state **state, t_cluster *cluster, int i, int j)
-{
-	t_cluster	*tmp;
-	char		*value;
-	char		*key;
-
-	tmp = cluster;
-	if (ft_strchr(tmp->cmd[i], '=') != NULL)
+	
+	// First character must be letter or underscore
+	if (!ft_isalpha(key[0]) && key[0] != '_')
 	{
-		key = ft_substr(tmp->cmd[i], 0, j);
-		value = ft_substr(tmp->cmd[i], j + 1,
-				ft_strlen(tmp->cmd[i]) - j - 1);
-		if (ft_value_check(state, key, value) == 1)
+		ft_key_error(key, "unset", state);
+		return (0);
+	}
+	
+	// Rest must be alphanumeric or underscore
+	i = 1;
+	while (key[i])
+	{
+		if (!ft_isalnum(key[i]) && key[i] != '_')
 		{
-			ft_key_error(tmp->cmd[i], "unset", *state);
-			free(key);
-			free(value);
-			return (1);
+			ft_key_error(key, "unset", state);
+			return (0);
 		}
-		free(key);
-		free(value);
+		i++;
 	}
-	return (0);
+	
+	return (1);
 }
 
 void	ft_unset_variable(t_state **state, t_cluster *cluster)
 {
-	t_cluster	*tmp;
-	int			i;
-	int			j;
+	int		i;
+	int		has_error;
 
 	i = 1;
-	tmp = cluster;
-	while (tmp->cmd[i])
+	has_error = 0;
+	
+	// If no arguments, unset succeeds (bash behavior)
+	if (!cluster->cmd[i])
 	{
-		j = 0;
-		while (tmp->cmd[i][j] && tmp->cmd[i][j] != '=')
+		(*state)->error = 0;
+		return;
+	}
+	
+	while (cluster->cmd[i])
+	{
+		// Validate variable name
+		if (!ft_validate_unset_key(cluster->cmd[i], *state))
 		{
-			if (ft_key_check(tmp->cmd[i][j], j) == 0)
-				return (ft_key_error(tmp->cmd[i], "unset", *state));
-			j++;
+			has_error = 1;
+			i++;
+			continue;
 		}
-		if (ft_del_if(state, cluster, i, j) == 0)
-		{
-			ft_del_node(&(*state)->env, tmp->cmd[i]);
-			ft_del_node(&(*state)->exp, tmp->cmd[i]);
-			(*state)->error = 0;
-		}
+		
+		// Remove from both env and export lists
+		ft_del_node(&(*state)->env, cluster->cmd[i]);
+		ft_del_node(&(*state)->exp, cluster->cmd[i]);
+		
 		i++;
 	}
+	
+	(*state)->error = has_error;
 }
