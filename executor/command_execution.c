@@ -6,7 +6,7 @@
 /*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:22:15 by nakunwar          #+#    #+#             */
-/*   Updated: 2025/09/09 15:25:04 by nakunwar         ###   ########.fr       */
+/*   Updated: 2025/09/09 17:49:02 by nakunwar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	ft_exec_file_check(t_state *state, t_cluster *cluster)
 			if (file_info.st_mode & S_IXUSR)
 			{
 				execve(cluster->cmd[0], cluster->cmd, state->envp);
-				exit(0);
+				ft_pipeline_error(cluster->cmd, "command not found", 127);
 			}
 			else
 				ft_pipeline_error(cluster->cmd, "permission denied", 126);
@@ -34,7 +34,7 @@ static void	ft_exec_file_check(t_state *state, t_cluster *cluster)
 				ft_pipeline_error(cluster->cmd, "filename argument required",
 					2);
 			else if (ft_strcmp(state->cluster->cmd[0], "..") == 0)
-				ft_pipeline_error(cluster->cmd, "commond not found", 127);
+				ft_pipeline_error(cluster->cmd, "command not found", 127);
 			else
 				ft_pipeline_error(cluster->cmd, "is a directory", 126);
 		}
@@ -80,7 +80,6 @@ void	ft_execve(t_state *state, t_cluster *cluster, int i, int check)
 	if (state->cmd_count > 1 && check > 0 && check != 7)
 	{
 		ft_dispatch_builtin(state, cluster);
-		free(state->line);
 		exit(state->error);
 	}
 	cmd_path = ft_cmd_get(state, cluster);
@@ -94,7 +93,8 @@ void	ft_execute_pipeline(t_state *state, int i)
 	t_cluster	*tmp;
 	int			check;
 
-	ft_open_pipes(state);
+	if (state->cmd_count > 1)
+		ft_open_pipes(state);
 	tmp = state->cluster;
 	while (tmp)
 	{
@@ -102,10 +102,13 @@ void	ft_execute_pipeline(t_state *state, int i)
 		if (tmp->cmd)
 		{
 			ft_handle_builtin(state, tmp, check, &i);
-			if (state->error)
+			if (state->error && check == 7)
 				return ;
 		}
 		tmp = tmp->next;
 	}
-	ft_close_pipe(state, check);
+	if (state->cmd_count > 1)
+		ft_close_pipe(state, check);
+	else
+		ft_wait_single_command(state);
 }

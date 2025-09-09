@@ -6,7 +6,7 @@
 /*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:34:10 by nakunwar          #+#    #+#             */
-/*   Updated: 2025/09/09 17:16:16 by nakunwar         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:04:56 by nakunwar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,4 +275,9 @@ int			ft_try_path_command(t_state *state, t_cluster *cluster, int i);
 void		ft_pars_str(char *s, t_parser *prs);
 void		ft_pars_str_helper(char *s, t_parser *prs);
 int			ft_handle_wait_status(int status);
+int			ft_handle_wait_status(int status);
+void		ft_wait_single_command(t_state *state);
+void		ft_setup_input_redirection(t_files *files);
+void		ft_setup_output_redirection(t_files *files);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 15:59:34 by nakunwar          #+#    #+#             */
-/*   Updated: 2025/09/09 16:03:40 by nakunwar         ###   ########.fr       */
+/*   Updated: 2025/09/09 17:59:23 by nakunwar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	ft_handle_builtin(t_state *state, t_cluster *tmp, int check, int *i)
 		ft_dispatch_builtin(state, tmp);
 	else
 	{
-		g_sig_status = IN_CAT;
 		tmp->pid = fork();
 		if (tmp->pid == 0)
 			ft_execve(state, tmp, *i, check);
@@ -32,7 +31,6 @@ void	ft_handle_builtin(t_state *state, t_cluster *tmp, int check, int *i)
 		{
 			perror("fork");
 			state->error = 1;
-			g_sig_status = 0;
 		}
 	}
 	(*i)++;
@@ -43,10 +41,11 @@ int	**ft_allocate_pipes(t_state *state)
 	int	**fd;
 	int	i;
 
+	if (state->cmd_count <= 1)
+		return (NULL);
 	fd = (int **)malloc(sizeof(int *) * state->cmd_count);
 	if (!fd)
 		return (NULL);
-	fd[state->cmd_count - 1] = NULL;
 	i = 0;
 	while (i < state->cmd_count - 1)
 	{
@@ -60,6 +59,7 @@ int	**ft_allocate_pipes(t_state *state)
 		}
 		i++;
 	}
+	fd[state->cmd_count - 1] = NULL;
 	return (fd);
 }
 
@@ -74,7 +74,11 @@ int	ft_create_pipes(int **fd, int count)
 		{
 			perror("pipe");
 			while (i-- >= 0)
+			{
+				close(fd[i][0]);
+				close(fd[i][1]);
 				free(fd[i]);
+			}
 			free(fd);
 			return (-1);
 		}

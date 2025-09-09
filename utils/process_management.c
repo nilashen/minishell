@@ -6,7 +6,7 @@
 /*   By: nakunwar <nakunwar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 16:27:57 by nakunwar          #+#    #+#             */
-/*   Updated: 2025/09/09 16:30:25 by nakunwar         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:00:22 by nakunwar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ void	ft_int_free(t_state *state)
 	i = 0;
 	if (state->fd)
 	{
-		while (state->fd[i])
+		while (i < state->cmd_count - 1)
 		{
-			free(state->fd[i]);
+			if (state->fd[i])
+				free(state->fd[i]);
 			i++;
 		}
 		free(state->fd);
@@ -50,7 +51,6 @@ void	ft_wait(t_state *state, int check)
 	}
 	g_sig_status = 0;
 	state->error = last_exit_code;
-	ft_int_free(state);
 }
 
 void	ft_close_pipe(t_state *state, int check)
@@ -58,19 +58,24 @@ void	ft_close_pipe(t_state *state, int check)
 	int	i;
 
 	i = 0;
-	while (i < state->cmd_count -1)
+	while (i < state->cmd_count - 1)
 	{
-		if (state->fd[i][0])
+		if (state->fd[i])
+		{
 			close(state->fd[i][0]);
-		if (state->fd[i][1])
 			close(state->fd[i][1]);
+		}
 		i++;
 	}
 	ft_wait(state, check);
+	ft_int_free(state);
 }
 
 void	ft_pipe_connect(t_state *state, t_cluster *cluster, int i, int check)
 {
+	int	j;
+
+	(void)check;
 	if (state->cluster == cluster)
 		dup2(state->fd[i][1], STDOUT_FILENO);
 	else if (cluster->next == NULL)
@@ -80,28 +85,22 @@ void	ft_pipe_connect(t_state *state, t_cluster *cluster, int i, int check)
 		dup2(state->fd[i - 1][0], STDIN_FILENO);
 		dup2(state->fd[i][1], STDOUT_FILENO);
 	}
-	ft_close_pipe(state, check);
+	j = 0;
+	while (j < state->cmd_count - 1)
+	{
+		close(state->fd[j][0]);
+		close(state->fd[j][1]);
+		j++;
+	}
 }
 
 void	ft_dup_init(t_state *state, t_cluster *cluster, int i, int check)
 {
-	int		fd[2];
 	t_files	*files;
 
 	files = cluster->files;
 	if (state->cmd_count > 1)
 		ft_pipe_connect(state, cluster, i, check);
-	if (files->fd_input == -2)
-	{
-		pipe(fd);
-		write(fd[1], files->heredoc, ft_strlen(files->heredoc));
-		close (fd[1]);
-		if (cluster->next || ft_strcmp(cluster->cmd[0], "echo"))
-			dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
-	}
-	if (files->fd_output >= 2)
-		dup2(files->fd_output, STDOUT_FILENO);
-	if (files->fd_input >= 2)
-		dup2(files->fd_input, STDIN_FILENO);
+	ft_setup_input_redirection(files);
+	ft_setup_output_redirection(files);
 }
